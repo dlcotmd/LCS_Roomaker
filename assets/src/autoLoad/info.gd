@@ -1,8 +1,9 @@
 extends Node
 
-var full_screen : bool = false
+var player_pos : Vector2
 
-func _process(delta):
+var full_screen : bool = false
+func _process(_delta):
 	if Input.is_action_just_pressed("full_screen"):
 		if full_screen:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)

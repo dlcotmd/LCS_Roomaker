@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://cvgpfxfsp43j2"]
+
+[ext_resource type="Script" path="res://assets/src/gui/hp_bar.gd" id="1_vg4ri"]
+[ext_resource type="Texture2D" uid="uid://di76rsw4h5ulk" path="res://assets/sprites/gui/progress_bar/under.png" id="2_gr4e2"]
+[ext_resource type="Texture2D" uid="uid://6qqh6fa0pdpt" path="res://assets/sprites/gui/progress_bar/over.png" id="3_j10gg"]
+[ext_resource type="Texture2D" uid="uid://cs5im8lv78lop" path="res://assets/sprites/gui/progress_bar/progress.png" id="4_smf0x"]
+
+[node name="hp_bar" type="Node2D"]
+modulate = Color(1, 1, 1, 0.54902)
+script = ExtResource("1_vg4ri")
+
+[node name="bar" type="TextureProgressBar" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -9.0
+offset_top = -2.0
+offset_right = 9.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+step = 0.1
+value = 50.0
+nine_patch_stretch = true
+stretch_margin_left = 1
+stretch_margin_top = 1
+stretch_margin_right = 1
+stretch_margin_bottom = 1
+texture_under = ExtResource("2_gr4e2")
+texture_over = ExtResource("3_j10gg")
+texture_progress = ExtResource("4_smf0x")
