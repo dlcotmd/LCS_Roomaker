@@ -1,0 +1,71 @@
+[gd_scene load_steps=4 format=3 uid="uid://cu1ql18sdinup"]
+
+[ext_resource type="FontFile" uid="uid://cggpj1gyeugyn" path="res://assets/fonts/gbasic.ttf" id="1_fhgvv"]
+[ext_resource type="Script" path="res://assets/src/ui/console_screen.gd" id="1_nuvn3"]
+[ext_resource type="FontFile" uid="uid://bqqco2lkkdn02" path="res://assets/fonts/gbold.ttf" id="2_wp0nd"]
+
+[node name="console_screen" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_nuvn3")
+
+[node name="back" type="ColorRect" parent="."]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 500.0
+offset_bottom = 276.0
+focus_mode = 2
+color = Color(0, 0, 0, 0.568627)
+
+[node name="back" type="ColorRect" parent="back"]
+offset_left = -1.0
+offset_top = -8.0
+offset_right = 507.0
+offset_bottom = 32.0
+focus_mode = 2
+color = Color(0, 0, 0, 0.568627)
+
+[node name="input" type="LineEdit" parent="."]
+offset_left = 14.0
+offset_top = 243.0
+offset_right = 946.0
+offset_bottom = 283.0
+scale = Vector2(0.5, 0.5)
+theme_override_fonts/font = ExtResource("1_fhgvv")
+theme_override_font_sizes/font_size = 24
+placeholder_text = "\"/\" 로 명령어 입력"
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+middle_mouse_paste_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+
+[node name="warring" type="RichTextLabel" parent="."]
+offset_left = 6.0
+offset_top = 8.0
+offset_right = 303.0
+offset_bottom = 48.0
+scale = Vector2(0.3, 0.3)
+theme_override_colors/default_color = Color(0.435294, 0, 0, 0.780392)
+theme_override_fonts/normal_font = ExtResource("2_wp0nd")
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "[shake] < Admin Console > [/shake]"
+
+[node name="des" type="RichTextLabel" parent="."]
+offset_left = 14.0
+offset_top = 125.0
+offset_right = 1274.0
+offset_bottom = 501.0
+scale = Vector2(0.3, 0.3)
+theme_override_colors/default_color = Color(0.443137, 0.443137, 0.443137, 1)
+theme_override_fonts/normal_font = ExtResource("1_fhgvv")
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "[ UP-arrow : 이전 명령어 ]
+
+몹 소환 l /summon <name> <x> <y>
+파티클ㅣ/particle <name> <x> <y>
+능력치ㅣ/state <speed, damage, knockback, hp, max_hp> <value(-, +)>
+[rainbow freq=0.1 sat=0.15 val=0.5 seed=0.1]디버그ㅣ/debug <GOD, dash_master, invincible> [/rainbow]"
+
+[connection signal="text_submitted" from="input" to="." method="_on_input_text_submitted"]

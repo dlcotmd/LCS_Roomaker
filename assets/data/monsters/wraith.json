@@ -1,0 +1,19 @@
+{
+	"hp" : 300,
+	"speed" : 8.5,
+	"accel" : 2.0,
+	"detect_range" : 150,
+	"collision_size" : [17.5, 10.5],
+	"attack" : {
+		"delay" : 3.5,
+		"method" : "melee",
+		"damage" : 8,
+		"knockback" : 8.5,
+		"collision_rect" : [15, 5, 36, 36]
+	},
+	"animation" : {
+		"texture_pivot" : [-33, -5],
+		"states" : ["idle", "death", "walk"],
+		"attack_frames" : [4, 8]
+	}
+}

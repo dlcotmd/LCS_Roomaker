@@ -2,11 +2,10 @@ extends CharacterBody2D
 
 class_name Player
 
-var SPEED : float = 60.0
 var ACCEL : float = 15.0
 
-var hp : float = 500
-var max_hp : float = 500
+var hp : float
+var max_hp : float
 
 var direction : Vector2
 var last_dir = 'front' # or "side", "back"
@@ -22,17 +21,23 @@ func _ready():
 
 func _physics_process(_delta):
 	Info.player_pos = global_position
+	max_hp = Info.player_max_hp
+	hp = Info.player_hp
 
 	if is_attacking == false:
 		direction = Input.get_vector("A","D","W","S")
 	
 	control_attackAnim()
 	control_of_dir()
-	
-	velocity.x = move_toward(velocity.x, SPEED * direction.x, ACCEL)
-	velocity.y = move_toward(velocity.y, SPEED * direction.y, ACCEL)
+	velocity.x = move_toward(velocity.x, Info.player_movement_speed * direction.x, ACCEL)
+	velocity.y = move_toward(velocity.y, Info.player_movement_speed * direction.y, ACCEL)
 
 	move_and_slide()
+
+func melee_attack():
+	is_attacking = true
+	direction = Vector2(0, 0)
+	anim_sp.play("attack_" + last_dir)
 
 func control_of_dir():
 	# 방향에 따른 애니메이션, 공격 범위 위치, 이미지 반전 조정
@@ -65,11 +70,34 @@ func control_attackAnim():
 			attack_collision.disabled = true
 
 	if Input.is_action_just_pressed("L_click"):
-		is_attacking = true
-		direction = Vector2(0, 0)
-		anim_sp.play("attack_" + last_dir)
+		melee_attack()
+	if Input.is_action_just_pressed("R_click"):
+		if Info.player_dash_amount > 0:
+			var power = 270 # 구르기 추가 예정
+			Command.shake_camera(get_tree().current_scene.find_child("all_entities").find_child("player").find_child("cam"), 0.15,  0.5)
+			if last_dir == 'front':
+				velocity.y = power
+			elif last_dir == 'back':
+				velocity.y = -power
+			elif last_dir == 'side':
+				if anim_sp.flip_h == true:
+					velocity.x = power
+				elif anim_sp.flip_h == false:
+					velocity.x = -power
+			Info.player_dash_amount -= 1
+			if Info.player_dash_amount == 0:
+				dash_charge()
+
+func dash_charge():
+	await get_tree().create_timer(3.5).timeout
+	Info.player_dash_amount = 3
 
 func _on_animation_finished():
 	# 원래는 애니메이션이 끝나면 발동되는 함수이지만,
 	# move, idle은 반복 애니메이션 이므로 끝나지 않아, 끝나는 애니매이션은 attack 졸류뿐
 	is_attacking = false
+
+func _on_body_area_entered(area):
+	if area.get_parent() is Monster and area.name == 'attack':
+		Command.hurt(self, area.get_parent().attack_damage)
+		Command.apply_knockback(area.global_position, self, area.get_parent().knockback_force)

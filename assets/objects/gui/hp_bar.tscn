@@ -6,19 +6,20 @@
 [ext_resource type="Texture2D" uid="uid://cs5im8lv78lop" path="res://assets/sprites/gui/progress_bar/progress.png" id="4_smf0x"]
 
 [node name="hp_bar" type="Node2D"]
-modulate = Color(1, 1, 1, 0.54902)
+z_index = 2
 script = ExtResource("1_vg4ri")
 
 [node name="bar" type="TextureProgressBar" parent="."]
+custom_minimum_size = Vector2(14, 4)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -9.0
+offset_left = -7.0
 offset_top = -2.0
-offset_right = 9.0
-offset_bottom = 3.0
+offset_right = 7.0
+offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
 step = 0.1
@@ -31,3 +32,5 @@ stretch_margin_bottom = 1
 texture_under = ExtResource("2_gr4e2")
 texture_over = ExtResource("3_j10gg")
 texture_progress = ExtResource("4_smf0x")
+tint_over = Color(100, 100, 100, 1)
+tint_progress = Color(2, 1, 0.554, 1)
