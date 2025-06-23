@@ -1,7 +1,9 @@
 extends Node
 
+# 커맨드 코드 마인크래프트 커맨드 느낌 함수들
 
-# https://pin.it/2FTcVU4pL 체력 UI 핀터레스트
+
+# 몬스터 소환 함수 / 몬스터 이름, 생성 할 좌표
 func summon_monster(monster_name : String, pos : Vector2):
 	if get_tree().current_scene.name != 'play_scene':
 		print('현재 게임 진행 중이 아니라 소환 할 수 없습니다.')
@@ -38,6 +40,7 @@ func summon_monster(monster_name : String, pos : Vector2):
 	
 	get_tree().current_scene.find_child("all_entities").add_child(monster)
 
+# 넉백 주는 함수 / 넉백을 주게 만든 대상, 넉백 받는 대상, 넉백 파워
 func apply_knockback(target_pos: Vector2, body: Node2D, force: float) -> void:
 	var direction = (body.global_position - target_pos).normalized()
 	var distance = body.global_position.distance_to(target_pos)
@@ -54,6 +57,7 @@ func apply_knockback(target_pos: Vector2, body: Node2D, force: float) -> void:
 		body.velocity.x += knockback_vector.x
 		body.velocity.y += knockback_vector.y / 1.8
 
+# 카메라 흔드는 함수 / 흔들 카메라, 지속 시간, 흔들림 강도
 func shake_camera(camera: Camera2D, duration: float, intensity: float) -> void:
 	var time_elapsed = 0.0
 	var original_offset = camera.offset
@@ -72,6 +76,7 @@ func shake_camera(camera: Camera2D, duration: float, intensity: float) -> void:
 
 	camera.offset = original_offset
 
+# 애니메이션 파티클 소환 함수 / 파티클 이름, 생성 위치, 바라볼 방향, 색상 변경 할 색상
 func particle(par_name : String, pos : Vector2, dir : Vector2, color : Color):
 	var par_path = preload("res://assets/objects/particles/animated_particle.tscn")
 	var par = par_path.instantiate()
@@ -83,19 +88,20 @@ func particle(par_name : String, pos : Vector2, dir : Vector2, color : Color):
 	par.rotation = dir.angle()
 	get_tree().current_scene.find_child("all_particles").add_child(par)
 
+# 데미지 주는 코드 / 대상 노드, 줄 데미지
 func hurt(node, damage : float):
 	if (node.has_node("anim_sp") or node.has_node("sp")) == false:
 		# 스프라이트를 안 가지고 있다면 그냥 반환
 		return
 	
-	if node is Player:
+	if node is Player: # 데미지 받는 대상이 플레이어면
 		Info.player_hp -= damage
 		Command.shake_camera(node.find_child("cam"), 0.15, damage * 0.1)
 		node.find_child("animation").play("hurt")
 		node.find_child("anim_sp").modulate = Color(100, 100, 100, 1)
 		await get_tree().create_timer(0.2).timeout
 		node.find_child("anim_sp").modulate = Color(1, 1, 1, 1)
-	else:
+	else: # 플레이어가 아니라면
 		node.hp -= damage
 		get_tree().current_scene.find_child("all_entities").find_child("player").find_child("animation").play("impact_zoom")
 		Command.shake_camera(get_tree().current_scene.find_child("all_entities").find_child("player").find_child("cam"), 0.15, damage * 0.1)

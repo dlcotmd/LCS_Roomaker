@@ -1,0 +1,20 @@
+<애니메이션 생성 방법>
+
+1. monster객체를 Godot에서 연다.
+2. monster 자식 노드인 "anim_sp"를 클릭한다.
+3. 오른쪽 창에 노드에 대한 정보가 뜰 때 가장 위의 animation에 들어간 것 옆에
+화살표를 눌러 새로운 animation을 만든다.
+
+# 이후 과정은 Godot animation sprite 유튜브 강의 참고
+https://youtu.be/tfdXgiMwUBw?feature=shared
+
+<애니메이션 규칙>
+1. 애니메이션에 default 애니메이션은 있어도 없어도 상관없다. (만들기 추천)
+2. 애니메이션의 이름과 종류는 반드시 다음과 같아야 한다.
+walk = 움직이는 애니메이션
+attack = 공격 애니메이션
+death = 죽는 애니메이션
+(여기서 부족하면 오류 발생, 더 많아도 어차피 실행 안됨.)
+3. 모든 애니메이션 파일은 animations 폴더에 저장하기
+4. 파티클 애니메이션만 particles 폴더에 저장하기
+5. 애니메이션 파일의 확장자는 .tres 이니 참고

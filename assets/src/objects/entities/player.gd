@@ -2,6 +2,9 @@ extends CharacterBody2D
 
 class_name Player
 
+# 플레이어 객체의 코드
+
+# 능력치 데이터는 Info.gd에 있는 데이터 들고옴.
 var ACCEL : float = 15.0
 
 var hp : float
@@ -71,6 +74,8 @@ func control_attackAnim():
 
 	if Input.is_action_just_pressed("L_click"):
 		melee_attack()
+	
+	# 구르기 코드인데 아직 불안정 함(추후 수정 or 삭제 예정)
 	if Input.is_action_just_pressed("R_click"):
 		if Info.player_dash_amount > 0:
 			var power = 270 # 구르기 추가 예정
@@ -98,6 +103,6 @@ func _on_animation_finished():
 	is_attacking = false
 
 func _on_body_area_entered(area):
-	if area.get_parent() is Monster and area.name == 'attack':
+	if area.get_parent() is Monster and area.name == 'attack': # 공격 준 상대가 몬스터 라면
 		Command.hurt(self, area.get_parent().attack_damage)
 		Command.apply_knockback(area.global_position, self, area.get_parent().knockback_force)

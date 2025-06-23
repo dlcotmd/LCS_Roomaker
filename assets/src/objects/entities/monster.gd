@@ -1,9 +1,17 @@
 extends CharacterBody2D
 
-class_name Monster
+class_name Monster # 클래스 설정으로 충돌 인식 간편하게 함
 
+# 몬스터 객체의 코드
+
+# 작동 이해 / 몬스터라는 플레이어를 따라가며, 체력이 없으면 죽는 객체의 거푸집을
+# 만든다고 생각하면 편함, 이미지도 없는 거푸집에 Command.gd의 summon_monster 함수로
+# 몬스터의 이름을 받아 그 이름에 맞는 animation과 .json에 있는 체력, 스피드 등등 데이터를
+# 거푸집에 씌운다고 생각하면 됨.
+
+# 1은 가소 값임 추후에 .json 에 있는 데이터로 바뀜.
 var SPEED : float = 1
-var ACCEL : float = 1
+var ACCEL : float = 1 # 가속력 속도에 비해 작을 수록 미끄러 지듯이 움직임
 
 var hp : float = 1
 var max_hp : float = 1
