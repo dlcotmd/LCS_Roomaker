@@ -101,6 +101,8 @@ func _ready():
 	attack_collision.position = Vector2(attack_rect[0], attack_rect[1])
 	attack_detect_collision.shape.size = Vector2(attack_rect[2], attack_rect[3])
 	attack_detect_collision.position = Vector2(attack_rect[0], attack_rect[1])
+	
+	navi_agent.target_position = Info.player_pos
 
 func _physics_process(delta):
 	if allow_move and not is_attacking and is_dead == false:
