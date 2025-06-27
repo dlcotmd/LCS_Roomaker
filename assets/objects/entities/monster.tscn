@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://assets/src/objects/entities/monster.gd" id="1_dr73e"]
 [ext_resource type="Texture2D" uid="uid://c2kr5iqslkg51" path="res://assets/sprites/lights/point.png" id="2_585sp"]
-[ext_resource type="SpriteFrames" uid="uid://c7du57vr7kqc4" path="res://assets/animations/crow.tres" id="2_yhu65"]
+[ext_resource type="SpriteFrames" uid="uid://dsl6fr43wslbr" path="res://assets/animations/reaper.tres" id="3_4v8og"]
 [ext_resource type="PackedScene" uid="uid://cvgpfxfsp43j2" path="res://assets/objects/gui/hp_bar.tscn" id="3_m4f1c"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lxfna"]
@@ -40,8 +40,8 @@ shape = SubResource("RectangleShape2D_lxfna")
 debug_color = Color(0, 0.556863, 0.317647, 0.419608)
 
 [node name="anim_sp" type="AnimatedSprite2D" parent="."]
-sprite_frames = ExtResource("2_yhu65")
-animation = &"walk"
+sprite_frames = ExtResource("3_4v8og")
+animation = &"attack"
 offset = Vector2(0, -3)
 
 [node name="hp_bar" parent="." instance=ExtResource("3_m4f1c")]
