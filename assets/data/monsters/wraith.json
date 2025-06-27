@@ -3,7 +3,7 @@
 	"speed" : 8.5,
 	"accel" : 2.0,
 	"detect_range" : 150,
-	"collision_size" : [17.5, 10.5],
+	"collision" : [0, 0, 17.5, 10.5],
 	"attack" : {
 		"delay" : 3.5,
 		"method" : "melee",

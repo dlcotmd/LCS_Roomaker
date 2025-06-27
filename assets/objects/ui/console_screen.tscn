@@ -17,6 +17,7 @@ focus_mode = 2
 color = Color(0, 0, 0, 0.568627)
 
 [node name="back" type="ColorRect" parent="back"]
+layout_mode = 0
 offset_left = -1.0
 offset_top = -8.0
 offset_right = 507.0

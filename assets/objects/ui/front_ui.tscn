@@ -79,6 +79,7 @@ offset_right = 23.0
 offset_bottom = 5.0
 
 [node name="grid2" type="ColorRect" parent="health_ui/lv/energy"]
+layout_mode = 0
 offset_left = 44.5
 offset_right = 45.5
 offset_bottom = 5.0

@@ -68,7 +68,7 @@ func _ready():
 	area_collision.position = Vector2(collision_data[0], collision_data[1])
 	area_collision.shape.size = Vector2(collision_data[2], collision_data[3]) + Vector2(0.5, 0.5)
 	
-	$hp_bar.position.y = -collision_data[3] * 1.2 - 3
+	$hp_bar.position.y = -collision_data[3] * 2.4
 	#$shadow.position.y = collision_size.y / 2 + 1
 	
 	#공격, 공격 감지 범위 collision 크기 위치 조정

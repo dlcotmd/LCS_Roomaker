@@ -8,5 +8,8 @@ script = ExtResource("1_t18ep")
 
 [node name="anim_sp" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("2_jrdyb")
+animation = &"play"
+frame = 3
+frame_progress = 1.0
 
 [connection signal="animation_finished" from="anim_sp" to="." method="_on_animation_finished"]
