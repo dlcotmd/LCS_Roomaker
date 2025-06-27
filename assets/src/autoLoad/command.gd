@@ -23,7 +23,7 @@ func summon_monster(monster_name : String, pos : Vector2):
 	
 	monster.SPEED = monster_data["speed"]
 	monster.ACCEL = monster_data["accel"]
-	monster.collision_size = Vector2(monster_data["collision_size"][0], monster_data["collision_size"][1])
+	monster.collision_data = monster_data["collision"]
 	
 	monster.detect_range = monster_data["detect_range"]
 	

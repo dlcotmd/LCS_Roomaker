@@ -16,7 +16,7 @@ var ACCEL : float = 1 # 가속력 속도에 비해 작을 수록 미끄러 지�
 var hp : float = 1
 var max_hp : float = 1
 
-var collision_size : Vector2
+var collision_data : Array
 var allow_move : bool = false
 var direction : Vector2
 var target_pos : Vector2
@@ -62,10 +62,13 @@ func _ready():
 	attack_collision.shape = RectangleShape2D.new()
 	collision.shape = RectangleShape2D.new()
 	
-	collision.shape.size = collision_size
-	area_collision.shape.size = collision_size + Vector2(0.5, 0.5)
 	
-	$hp_bar.position.y = -collision_size.y * 1.2 - 3
+	collision.shape.size = Vector2(collision_data[2], collision_data[3])
+	collision.position = Vector2(collision_data[0], collision_data[1])
+	area_collision.position = Vector2(collision_data[0], collision_data[1])
+	area_collision.shape.size = Vector2(collision_data[2], collision_data[3]) + Vector2(0.5, 0.5)
+	
+	$hp_bar.position.y = -collision_data[3] * 1.2 - 3
 	#$shadow.position.y = collision_size.y / 2 + 1
 	
 	#공격, 공격 감지 범위 collision 크기 위치 조정

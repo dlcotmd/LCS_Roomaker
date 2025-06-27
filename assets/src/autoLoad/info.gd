@@ -4,8 +4,8 @@ extends Node
 
 # 플레이어 데이터
 var player_pos : Vector2
-var player_hp : float = 150
-var player_max_hp : float = 150
+var player_hp : float = 100
+var player_max_hp : float = 100
 var player_attack_damage : float = 5.5
 var player_dash_amount : int = 3
 var player_knockback_force : float = 1.8

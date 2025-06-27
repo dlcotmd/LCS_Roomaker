@@ -3,7 +3,7 @@
 	"speed" : 10.0,
 	"accel" : 4.0,
 	"detect_range" : 80,
-	"collision_size" : [22, 14],
+	"collision_size" : [0, 0, 22, 14],
 	"attack" : {
 		"delay" : 2.7,
 		"damage" : 10,
