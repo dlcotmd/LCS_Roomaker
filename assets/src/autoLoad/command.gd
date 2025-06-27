@@ -28,6 +28,7 @@ func summon_monster(monster_name : String, pos : Vector2):
 	monster.detect_range = monster_data["detect_range"]
 	
 	monster.attack_damage = monster_data["attack"]["damage"]
+	monster.attack_method = monster_data["attack"]["method"]
 	monster.knockback_force = monster_data["attack"]["knockback"]
 	monster.attack_rect = monster_data["attack"]["collision_rect"]
 	monster.attack_frames = monster_data["animation"]["attack_frames"]
@@ -36,9 +37,40 @@ func summon_monster(monster_name : String, pos : Vector2):
 	monster.animation = load("res://assets/animations/" + monster_name + ".tres")
 	monster.texture_pivot = Vector2(monster_data["animation"]["texture_pivot"][0], monster_data["animation"]["texture_pivot"][1])
 	
+	if monster_data['attack']['method'] == 'projectile':
+		monster.projectile_type = monster_data['attack']["projectile"]["type"]
+		monster.shoot_pos = Vector2(monster_data['attack']["projectile"]["shoot_pos"][0], monster_data['attack']["projectile"]["shoot_pos"][1])
+		monster.projectile_name = monster_data['attack']["projectile"]["name"]
+		monster.projectile_delay_range = monster_data['attack']["projectile"]["delay"]
+		monster.shoot_frames = monster_data['animation']["shoot_frames"]
+	
 	monster.global_position = pos
 	
 	get_tree().current_scene.find_child("all_entities").add_child(monster)
+	
+func summon_projectile(project_name : String, pos : Vector2, dir : Vector2):
+	if get_tree().current_scene.name != 'play_scene':
+		print('현재 게임 진행 중이 아니라 소환 할 수 없습니다.')
+		return
+	
+	var project_data = Cfile.get_jsonData("res://assets/data/projectiles/" + project_name + ".json")
+	if project_data == null:
+		print('데이터에 없는 존재')
+		return
+	
+	var pro_path = preload("res://assets/objects/entities/projectiles.tscn")
+	var pro : Projectile = pro_path.instantiate()
+	pro.speed = project_data["speed"]
+	pro.dir = dir
+	pro.damage = project_data["damage"]
+	pro.knockback = project_data["knockback"]
+	pro.collision_size = Vector2(project_data["collision_size"][0], project_data["collision_size"][0])
+	
+	pro.find_child("anim_sp").sprite_frames = load("res://assets/animations/projectiles/" + project_name + ".tres")
+
+	pro.global_position = pos
+	
+	get_tree().current_scene.find_child("all_entities").add_child(pro)
 
 # 넉백 주는 함수 / 넉백을 주게 만든 대상, 넉백 받는 대상, 넉백 파워
 func apply_knockback(target_pos: Vector2, body: Node2D, force: float) -> void:
@@ -60,9 +92,9 @@ func apply_knockback(target_pos: Vector2, body: Node2D, force: float) -> void:
 # 카메라 흔드는 함수 / 흔들 카메라, 지속 시간, 흔들림 강도
 func shake_camera(camera: Camera2D, duration: float, intensity: float) -> void:
 	var time_elapsed = 0.0
-	var original_offset = camera.offset
-	
 	intensity = clamp(intensity, 0, 40)
+
+	var original_offset = camera.offset
 
 	while time_elapsed < duration:
 		var shake_offset = Vector2(
@@ -75,6 +107,7 @@ func shake_camera(camera: Camera2D, duration: float, intensity: float) -> void:
 		time_elapsed += get_process_delta_time()
 
 	camera.offset = original_offset
+
 
 # 애니메이션 파티클 소환 함수 / 파티클 이름, 생성 위치, 바라볼 방향, 색상 변경 할 색상
 func particle(par_name : String, pos : Vector2, dir : Vector2, color : Color):

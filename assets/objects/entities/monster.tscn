@@ -1,6 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://dxp0wcjcnnbqc"]
+[gd_scene load_steps=9 format=3 uid="uid://dxp0wcjcnnbqc"]
 
 [ext_resource type="Script" path="res://assets/src/objects/entities/monster.gd" id="1_dr73e"]
+[ext_resource type="Texture2D" uid="uid://c2kr5iqslkg51" path="res://assets/sprites/lights/point.png" id="2_585sp"]
 [ext_resource type="SpriteFrames" uid="uid://c7du57vr7kqc4" path="res://assets/animations/crow.tres" id="2_yhu65"]
 [ext_resource type="PackedScene" uid="uid://cvgpfxfsp43j2" path="res://assets/objects/gui/hp_bar.tscn" id="3_m4f1c"]
 
@@ -22,6 +24,16 @@ script = ExtResource("1_dr73e")
 
 [node name="navi_agent" type="NavigationAgent2D" parent="."]
 avoidance_enabled = true
+
+[node name="shoot_marker" type="Marker2D" parent="."]
+visible = false
+
+[node name="debug_show" type="Sprite2D" parent="shoot_marker"]
+visible = false
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_585sp")
+
+[node name="sight" type="RayCast2D" parent="."]
 
 [node name="coll" type="CollisionShape2D" parent="."]
 position = Vector2(0, 6)

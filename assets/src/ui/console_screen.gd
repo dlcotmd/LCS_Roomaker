@@ -16,6 +16,7 @@ func _process(delta):
 			inputBox.grab_focus()
 			index_num = 0
 			get_tree().paused = true
+			control_des_text()
 			visible = true
 		else:
 			get_tree().paused = false
@@ -27,7 +28,12 @@ func _process(delta):
 		reverse_list.reverse()
 		inputBox.text = reverse_list[index_num]
 		index_num += 1
-		
+
+func control_des_text():
+	var monster_names : String = "[b]<몹 이름 리스트>[/b]\n"
+	for path in Cfile.get_filesPath("res://assets/data/monsters/", ".json"):
+		monster_names += path.get_file().get_basename() + "\n"
+	$des2.text = monster_names
 
 func control_command(command_text : String):
 	var sp_text = command_text.split(" ")
@@ -60,7 +66,8 @@ func control_command(command_text : String):
 			Info.player_knockback_force = 99
 			Info.player_dash_amount = 99999999999
 			Info.player_movement_speed = 120.0
-
+	elif sp_text[0] == "/projectile" and len(sp_text) == 4:
+		Command.summon_projectile(sp_text[1], Info.player_pos + Vector2(int(sp_text[2]), -int(sp_text[3])), Vector2(0, 0))
 func _on_input_text_submitted(new_text):
 	index_num = 0
 	control_command(new_text)
