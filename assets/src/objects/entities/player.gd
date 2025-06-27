@@ -90,12 +90,16 @@ func control_attackAnim():
 				elif anim_sp.flip_h == false:
 					velocity.x = -power
 			Info.player_dash_amount -= 1
+			if Info.player_dash_amount == 2:
+				dash_charge()
+			if Info.player_dash_amount == 1:
+				dash_charge()
 			if Info.player_dash_amount == 0:
 				dash_charge()
 
 func dash_charge():
-	await get_tree().create_timer(3.5).timeout
-	Info.player_dash_amount = 3
+	await get_tree().create_timer(2).timeout
+	Info.player_dash_amount += 1
 
 func _on_animation_finished():
 	# 원래는 애니메이션이 끝나면 발동되는 함수이지만,
