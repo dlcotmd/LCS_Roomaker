@@ -9,7 +9,7 @@
 		"damage" : 3,
 		"knockback" : 1.0,
 		"method" : "melee",
-		"collision_rect" : [15, 8, 35, 30]
+		"collision_rect" : [17, 1, 35, 28]
 	},
 	"animation" : {
 		"texture_pivot" : [0, 0],
