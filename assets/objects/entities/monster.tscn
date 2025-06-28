@@ -41,9 +41,8 @@ debug_color = Color(0, 0.556863, 0.317647, 0.419608)
 
 [node name="anim_sp" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("3_3ikuq")
-animation = &"attack"
-frame = 6
-frame_progress = 1.0
+animation = &"walk"
+frame_progress = 0.524316
 offset = Vector2(0, -3)
 
 [node name="hp_bar" parent="." instance=ExtResource("3_m4f1c")]
