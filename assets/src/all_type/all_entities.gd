@@ -4,10 +4,11 @@ extends Node2D
 func _process(_delta):
 	
 	for node in get_children():
-		if node.has_node("shadow") == true: # 자식 노드 중 그림자 객체를 가지고 있다면
-			continue # 다음 노드로 넘어감 (밑에 코드 실행 X)
-
-		# 그림자 객체 없으면 실행
-		var shadow_path = preload("res://assets/objects/gui/shadow.tscn")
-		var shadow = shadow_path.instantiate()
-		node.add_child(shadow) # 해당 노드에 그림자 객체 추가
+		if node.has_node("shadow") == false: # 자식 노드 중 그림자 객체를 안 가졌다면
+			var shadow_path = load("res://assets/objects/gui/shadow.tscn")
+			var shadow = shadow_path.instantiate()
+			node.add_child(shadow) # 해당 노드에 그림자 객체 추가
+		if node.has_node("hp_bar") == false and node is Monster: # 자식 노드 중 hp 객체를 안 가졌다면
+			var hp_bar_path = load("res://assets/objects/gui/hp_bar.tscn")
+			var hp_bar = hp_bar_path.instantiate()
+			node.add_child(hp_bar)

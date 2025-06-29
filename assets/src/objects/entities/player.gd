@@ -22,14 +22,14 @@ func _ready():
 	anim_sp = $anim_sp
 	attack_collision = $attack/coll
 
-func _physics_process(_delta):
+func _physics_process(_delta):	
 	Info.player_pos = global_position
 	max_hp = Info.player_max_hp
 	hp = Info.player_hp
 
 	if is_attacking == false:
 		direction = Input.get_vector("A","D","W","S")
-	
+		
 	control_attackAnim()
 	control_of_dir()
 	velocity.x = move_toward(velocity.x, Info.player_movement_speed * direction.x, ACCEL)
@@ -108,5 +108,5 @@ func _on_animation_finished():
 
 func _on_body_area_entered(area):
 	if area.get_parent() is Monster and area.name == 'attack': # 공격 준 상대가 몬스터 라면
-		Command.hurt(self, area.get_parent().attack_damage)
+		Command.hurt(self, area.get_parent().meleeAttack_damage)
 		Command.apply_knockback(area.global_position, self, area.get_parent().knockback_force)

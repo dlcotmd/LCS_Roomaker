@@ -10,8 +10,7 @@ func summon_monster(monster_name : String, pos : Vector2):
 		return
 	
 	var monster_data = Cfile.get_jsonData("res://assets/data/monsters/" + monster_name + ".json")
-	#print(monster_data)
-	#print(Cfile.get_filesPath("res://assets/data/monsters/", ".json"))
+
 	if monster_data == null:
 		print('데이터에 없는 존재')
 		return
@@ -21,25 +20,25 @@ func summon_monster(monster_name : String, pos : Vector2):
 	monster.max_hp = monster_data["hp"]
 	monster.hp = monster_data["hp"]
 	
-	monster.SPEED = monster_data["speed"]
-	monster.ACCEL = monster_data["accel"]
-	monster.collision_data = monster_data["collision"]
+	monster.speed = monster_data["speed"]
+	monster.accel = monster_data["accel"]
+	monster.collision_rect = Rect2(monster_data["collision"][0], monster_data["collision"][1], monster_data["collision"][2], monster_data["collision"][3])
 	
 	monster.detect_range = monster_data["detect_range"]
 	
-	monster.attack_damage = monster_data["attack"]["damage"]
+	monster.meleeAttack_damage = monster_data["attack"]["damage"]
 	monster.attack_method = monster_data["attack"]["method"]
 	monster.knockback_force = monster_data["attack"]["knockback"]
-	monster.attack_rect = monster_data["attack"]["collision_rect"]
-	monster.attack_frames = monster_data["animation"]["attack_frames"]
-	monster.attack_delay = monster_data["attack"]["delay"]
+	monster.meleeAttack_rect = Rect2(monster_data["attack"]["collision"][0], monster_data["attack"]["collision"][1], monster_data["attack"]["collision"][2], monster_data["attack"]["collision"][3])
+	monster.meleeAttack_frames = monster_data["animation"]["attack_frames"]
+	monster.meleeAttack_delay = monster_data["attack"]["delay"]
 	
-	monster.animation = load("res://assets/animations/" + monster_name + ".tres")
+	monster.load_animation = load("res://assets/animations/monsters/" + monster_name + ".tres")
 	monster.texture_pivot = Vector2(monster_data["animation"]["texture_pivot"][0], monster_data["animation"]["texture_pivot"][1])
 	
 	if monster_data['attack']['method'] == 'projectile':
-		monster.projectile_type = monster_data['attack']["projectile"]["type"]
-		monster.shoot_pos = Vector2(monster_data['attack']["projectile"]["shoot_pos"][0], monster_data['attack']["projectile"]["shoot_pos"][1])
+		monster.shoot_func = monster_data['attack']["projectile"]["shoot_func"]
+		monster.projectile_pos = Vector2(monster_data['attack']["projectile"]["shoot_pos"][0], monster_data['attack']["projectile"]["shoot_pos"][1])
 		monster.projectile_name = monster_data['attack']["projectile"]["name"]
 		monster.projectile_delay_range = monster_data['attack']["projectile"]["delay"]
 		monster.shoot_frames = monster_data['animation']["shoot_frames"]
@@ -47,8 +46,8 @@ func summon_monster(monster_name : String, pos : Vector2):
 	monster.global_position = pos
 	
 	get_tree().current_scene.find_child("all_entities").add_child(monster)
-	
-func summon_projectile(project_name : String, pos : Vector2, dir : Vector2):
+
+func summon_projectile(project_name : String, pos : Vector2, dir : Vector2 = Vector2(0, 0)):
 	if get_tree().current_scene.name != 'play_scene':
 		print('현재 게임 진행 중이 아니라 소환 할 수 없습니다.')
 		return
@@ -108,9 +107,8 @@ func shake_camera(camera: Camera2D, duration: float, intensity: float) -> void:
 
 	camera.offset = original_offset
 
-
 # 애니메이션 파티클 소환 함수 / 파티클 이름, 생성 위치, 바라볼 방향, 색상 변경 할 색상
-func particle(par_name : String, pos : Vector2, dir : Vector2, color : Color):
+func particle(par_name : String, pos : Vector2, dir : Vector2 = Vector2(0, 0), color : Color = Color(1, 1, 1, 1)):
 	var par_path = preload("res://assets/objects/particles/animated_particle.tscn")
 	var par = par_path.instantiate()
 	
@@ -130,17 +128,29 @@ func hurt(node, damage : float):
 	if node is Player: # 데미지 받는 대상이 플레이어면
 		Info.player_hp -= damage
 		Command.shake_camera(node.find_child("cam"), 0.15, damage * 0.1)
+		node.find_child("animation").play("RESET")
 		node.find_child("animation").play("hurt")
-		node.find_child("anim_sp").modulate = Color(100, 100, 100, 1)
-		await get_tree().create_timer(0.2).timeout
-		node.find_child("anim_sp").modulate = Color(1, 1, 1, 1)
 	else: # 플레이어가 아니라면
 		node.hp -= damage
 		get_tree().current_scene.find_child("all_entities").find_child("player").find_child("animation").play("impact_zoom")
 		Command.shake_camera(get_tree().current_scene.find_child("all_entities").find_child("player").find_child("cam"), 0.15, damage * 0.1)
 		Command.particle("attack_hit", node.global_position + Info.player_pos.direction_to(node.global_position).normalized() * 13, Info.player_pos.direction_to(node.global_position).normalized(), Color("#b81a33"))
-		node.find_child("anim_sp").modulate = Color(100, 100, 100, 1)
-		Engine.time_scale = 0.45
-		await get_tree().create_timer(0.1).timeout
-		Engine.time_scale = 1.0
-		node.find_child("anim_sp").modulate = Color(1, 1, 1, 1)
+		node.find_child("animation").play("RESET")
+		node.find_child("animation").play("hurt")
+		timestopBBU(0.45, 0.5)
+
+func kill(node : Node2D):
+	if node.is_dead:
+		return
+	if node.has_node("anim_sp") == false: # anim_sp가 없는 엔티티면 그냥 삭제
+		particle("blood_explosion", node.global_position)
+		queue_free()
+		return
+		
+	node.is_dead = true
+	node.find_child("anim_sp").play("death")
+	
+func timestopBBU(scale : float, duration : float):
+	Engine.time_scale = scale
+	await get_tree().create_timer(duration * scale).timeout
+	Engine.time_scale = 1.0

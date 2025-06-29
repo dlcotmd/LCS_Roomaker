@@ -54,9 +54,9 @@ text = "[shake] < Admin Console > [/shake]"
 
 [node name="des" type="RichTextLabel" parent="."]
 offset_left = 14.0
-offset_top = 125.0
+offset_top = 181.0
 offset_right = 1274.0
-offset_bottom = 501.0
+offset_bottom = 371.0
 scale = Vector2(0.3, 0.3)
 theme_override_colors/default_color = Color(0.443137, 0.443137, 0.443137, 1)
 theme_override_fonts/normal_font = ExtResource("1_fhgvv")

@@ -12,7 +12,7 @@ script = ExtResource("1_khj4v")
 [node name="anim_sp" type="AnimatedSprite2D" parent="."]
 z_index = 6
 sprite_frames = ExtResource("2_2sdnr")
-animation = &"shoot"
+animation = &"flying"
 
 [node name="coll" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_8df7j")

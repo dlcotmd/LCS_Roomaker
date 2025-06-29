@@ -10,103 +10,92 @@ class_name Monster # 클래스 설정으로 충돌 인식 간편하게 함
 # 거푸집에 씌운다고 생각하면 됨.
 
 # 1은 가소 값임 추후에 .json 에 있는 데이터로 바뀜.
-var SPEED : float = 1
-var ACCEL : float = 1 # 가속력 속도에 비해 작을 수록 미끄러 지듯이 움직임
+var speed : float = 1
+var accel : float = 1 # 가속력 속도에 비해 작을 수록 미끄러 지듯이 움직임
 
 var hp : float = 1
 var max_hp : float = 1
 
-var collision_data : Array
-var allow_move : bool = false
+var collision_rect : Rect2 
 var direction : Vector2
 var target_pos : Vector2
 
 var detect_range : float
 
+var is_dead : bool = false
 var is_attacking : bool = false
 var is_shooting : bool = false
-var is_dead : bool = false
 
-var attack_damage : float
-var attack_delay : float
-var allow_attack : bool = true
-var attack_delay_timer : float = 0
-var attack_rect : Array # x, y, width, height
-var attack_frames : Array # 공격을 넣는 타이밍이 두번도 가능하기 때문
+var allow_meleeAttack : bool = true
+var allow_move : bool = true
+var allow_shoot : bool = true
+
+var meleeAttack_damage : float
+var meleeAttack_delay : float
+var meleeAttack_delay_timer : float = 0
+var meleeAttack_rect : Rect2
+var meleeAttack_frames : Array # 공격을 넣는 타이밍이 두번도 가능하기 때문
 
 var attack_method : String
 
 var projectile_delay_timer : float = 0
 var projectile_delay : float
-var projectile_type : String
+var projectile_pos : Vector2 # 발사체 소환 위치
 var projectile_name : String
-var projectile_delay_range : Array
-var projectile_speed : float
-var projectile_damage : float
-var projectile_kncokback : float
+var projectile_delay_range : Array # 랜덤한 딜레이 범위를 위한 변수
 
 var last_projectile_frame : int # 총알 한 번에 여러개 소환 막기
 
-var shoot_pos : Vector2
-var shoot_frames : Array
+var shoot_func : String # 어떻게 날릴지 형식
+var shoot_frames : Array # 딱 날리는 프레임들
 
 var knockback_force : float
 
 var texture_pivot : Vector2
-var animation : SpriteFrames
+var load_animation : SpriteFrames
 
 # Pointer--------------
 var anim_sp : AnimatedSprite2D
-var attack_collision : CollisionShape2D
-var attack_detect_collision : CollisionShape2D
+var meleeAttack_collision : CollisionShape2D
+var meleeAttack_detect_collision : CollisionShape2D
 var collision : CollisionShape2D
 var area_collision : CollisionShape2D
-var navi_agent : NavigationAgent2D
 var sight : RayCast2D
-var shoot_marker : Marker2D
 
 func _ready():
 	anim_sp = $anim_sp
-	attack_collision = $attack/coll
+	meleeAttack_collision = $attack/coll
+	meleeAttack_detect_collision = $detect_attack/coll
 	collision = $coll
 	area_collision = $monster/coll
-	attack_detect_collision = $attack_detect/coll
-	navi_agent = $navi_agent
 	sight = $sight
-	shoot_marker = $shoot_marker
-	
-	anim_sp.sprite_frames = animation
+
+	anim_sp.sprite_frames = load_animation
 	anim_sp.offset = texture_pivot
 	
+	anim_sp.material = anim_sp.material.duplicate()
+	
 	area_collision.shape = RectangleShape2D.new()
-	attack_detect_collision.shape = RectangleShape2D.new()
-	attack_collision.shape = RectangleShape2D.new()
 	collision.shape = RectangleShape2D.new()
-
-	collision.shape.size = Vector2(collision_data[2], collision_data[3])
-	collision.position = Vector2(collision_data[0], collision_data[1])
-	area_collision.position = Vector2(collision_data[0], collision_data[1])
-	area_collision.shape.size = Vector2(collision_data[2], collision_data[3]) + Vector2(0.5, 0.5)
-	
-	$hp_bar.position.y = -collision_data[3] * 2.4
-
-	navi_agent.radius = (collision_data[2] + collision_data[3]) / 3
-	
-	if attack_method == "projectile":
-		projectile_delay = randf_range(projectile_delay_range[0], projectile_delay_range[1])
-		shoot_marker.position = shoot_pos
 	
 	#공격, 공격 감지 범위 collision 크기 위치 조정
-	attack_collision.shape.size = Vector2(attack_rect[2], attack_rect[3])
-	attack_collision.position = Vector2(attack_rect[0], attack_rect[1])
-	attack_detect_collision.shape.size = Vector2(attack_rect[2], attack_rect[3])
-	attack_detect_collision.position = Vector2(attack_rect[0], attack_rect[1])
+	for coll in [meleeAttack_collision, meleeAttack_detect_collision]:
+		coll.shape = RectangleShape2D.new()
+		coll.shape.size = meleeAttack_rect.size
+		coll.position = meleeAttack_rect.position
+
+	collision.shape.size = collision_rect.size
+	collision.position = collision_rect.position
+	area_collision.position = collision_rect.position
+	area_collision.shape.size = collision_rect.size + Vector2(0.5, 0.5)
 	
-	navi_agent.target_position = Info.player_pos
+	anim_sp.play("idle")
+	if attack_method == "projectile":
+		projectile_delay = randf_range(projectile_delay_range[0], projectile_delay_range[1])
 
 func _physics_process(delta):
-	if allow_move and not is_attacking and is_dead == false:
-		direction = (navi_agent.get_next_path_position() - global_position).normalized()
+	if allow_move and is_attacking == false and is_shooting == false and is_dead == false:
+		direction = (Info.player_pos - global_position).normalized()
 	else:
 		direction = Vector2.ZERO
 	
@@ -114,41 +103,21 @@ func _physics_process(delta):
 	control_attackAnim()
 	control_of_dir()
 	control_sight()
+
 	if attack_method == "projectile":
 		control_projectile(delta)
-	
-	var new_velocity = direction * SPEED * delta * 60
-	navi_agent.set_velocity(new_velocity)
-
+		
+	velocity = velocity.move_toward(direction * speed, accel)
 	move_and_slide()
 
 func melee_attack():
-	if not allow_attack:
+	if not allow_meleeAttack:
 		return
 	is_attacking = true
 	allow_move = false
 	anim_sp.play("attack")
 func shoot_projectile():
-	if projectile_type == "player_dir":
-		Command.summon_projectile(projectile_name, shoot_marker.global_position, shoot_marker.global_position.direction_to(Info.player_pos))
-	elif projectile_type == "circle_expand":
-		for i in 36:
-			var angle_deg = i * (360.0 / 36)
-			var angle_rad = deg_to_rad(angle_deg)
-
-			var dir = Vector2(cos(angle_rad), sin(angle_rad))
-			Command.summon_projectile(projectile_name, shoot_marker.global_position, dir)
-func hurt(damage):
-	hp -= damage
-	anim_sp.modulate = Color(100, 100, 100, 1)
-	await get_tree().create_timer(0.2).timeout
-	anim_sp.modulate = Color(1, 1, 1, 1)
-func dead():
-	if is_dead:
-		return
-	is_dead = true
-	direction = Vector2.ZERO
-	anim_sp.play("death")
+	Shoot.call(shoot_func, projectile_name, global_position + projectile_pos)
 
 func control_projectile(delta):
 	projectile_delay_timer += delta
@@ -170,15 +139,15 @@ func control_sight():
 	if sight.is_colliding():
 		if sight.get_collider() is Player:
 			allow_move = true
-		else:
+		elif not sight.get_collider() is Monster:
 			allow_move = false
 func control_attack_timer(delta):
-	if allow_attack:
+	if allow_meleeAttack:
 		return
-	attack_delay_timer += delta
-	if attack_delay_timer >= attack_delay:
-		allow_attack = true
-		attack_delay_timer = 0
+	meleeAttack_delay_timer += delta
+	if meleeAttack_delay_timer >= meleeAttack_delay:
+		allow_meleeAttack = true
+		meleeAttack_delay_timer = 0
 func control_of_dir():
 	# 방향에 따른 애니메이션, 공격 범위 위치, 이미지 반전 조정
 	if is_attacking or is_dead or is_shooting:
@@ -187,23 +156,23 @@ func control_of_dir():
 		anim_sp.play("walk")
 		anim_sp.offset.x = -texture_pivot.x
 		if attack_method == "projectile":
-			shoot_marker.position.x = shoot_pos.x
-		attack_collision.position = Vector2(attack_rect[0], attack_rect[1])
-		attack_detect_collision.position = Vector2(attack_rect[0], attack_rect[1])
+			projectile_pos.x = abs(projectile_pos.x)
+		meleeAttack_collision.position.x = meleeAttack_rect.position.x
+		meleeAttack_detect_collision.position.x = meleeAttack_rect.position.x
 		anim_sp.flip_h = true
 	elif direction.x < 0:
 		anim_sp.play("walk")
 		anim_sp.offset.x = texture_pivot.x
 		if attack_method == "projectile":
-			shoot_marker.position.x = -shoot_pos.x
-		attack_collision.position = Vector2(-attack_rect[0], attack_rect[1])
-		attack_detect_collision.position = Vector2(-attack_rect[0], attack_rect[1])
+			projectile_pos.x = -abs(projectile_pos.x)
+		meleeAttack_collision.position.x = -meleeAttack_rect.position.x
+		meleeAttack_detect_collision.position.x = -meleeAttack_rect.position.x
 		anim_sp.flip_h = false
 	else:
 		anim_sp.play("idle")
 func control_attackAnim():
 	if is_attacking == false and is_dead == false and is_shooting == false:
-		for area in $attack_detect.get_overlapping_areas():
+		for area in $detect_attack.get_overlapping_areas():
 			if area.name == "player" and area.get_parent() is Player:
 				melee_attack()
 				break
@@ -211,16 +180,16 @@ func control_attackAnim():
 	# 공격 중일 때만 프레임 체크
 	if anim_sp.animation == "attack":
 		# json에서 frames에 있는 값들이 float임 json엔 Float만 가능하나봄 ㅅㅂ
-		attack_collision.disabled = !(float(anim_sp.frame) in attack_frames)
+		meleeAttack_collision.disabled = !(float(anim_sp.frame) in meleeAttack_frames)
 	else:
-		attack_collision.disabled = true
+		meleeAttack_collision.disabled = true
 
 func _on_animation_finished():
 	match anim_sp.animation:
 		"attack":
 			is_attacking = false
 			allow_move = true
-			allow_attack = false
+			allow_meleeAttack = false
 		"shoot":
 			last_projectile_frame = -1
 			is_shooting = false
@@ -233,10 +202,4 @@ func _on_body_area_entered(area):
 		Command.hurt(self, Info.player_attack_damage)
 		Command.apply_knockback(area.global_position, self, Info.player_knockback_force)
 		if hp <= 0:
-			dead()
-
-# 네비게이션 길 설정 signal
-func _on_navi_timer_timeout():
-	navi_agent.target_position = Info.player_pos
-func _on_navi_agent_velocity_computed(safe_velocity):
-	velocity = velocity.move_toward(safe_velocity, ACCEL)
+			Command.kill(self)

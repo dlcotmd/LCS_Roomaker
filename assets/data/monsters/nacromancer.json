@@ -6,14 +6,14 @@
 	"collision" : [0, 5, 18.5, 11],
 	"attack" : {
 		"delay" : 1.0,
-		"damage" : 17,
+		"damage" : 8,
 		"knockback" : 1.0,
 		"method" : "melee",
-		"collision_rect" : [33, 5, 35, 32]
+		"collision" : [20, 6, 50, 18]
 	},
 	"animation" : {
 		"texture_pivot" : [0, -3],
 		"states" : ["idle", "death", "walk"],
-		"attack_frames" : [7, 8, 9, 10, 11]
+		"attack_frames" : [8, 9, 10, 11, 12]
 	}
 }
