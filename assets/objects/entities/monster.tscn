@@ -1,15 +1,57 @@
-[gd_scene load_steps=7 format=3 uid="uid://dxp0wcjcnnbqc"]
+[gd_scene load_steps=12 format=3 uid="uid://dxp0wcjcnnbqc"]
 
 [ext_resource type="Script" path="res://assets/src/objects/entities/monster.gd" id="1_dr73e"]
-[ext_resource type="SpriteFrames" uid="uid://bxaoa8ti5wog1" path="res://assets/animations/nacromancer.tres" id="3_eoweq"]
-[ext_resource type="PackedScene" uid="uid://cvgpfxfsp43j2" path="res://assets/objects/gui/hp_bar.tscn" id="3_m4f1c"]
+[ext_resource type="SpriteFrames" uid="uid://bxaoa8ti5wog1" path="res://assets/animations/monsters/nacromancer.tres" id="2_fqs0a"]
+[ext_resource type="Shader" uid="uid://6jcd5ivo3p7s" path="res://assets/shaders/hit_flash.tres" id="2_tln2x"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lxfna"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7depo"]
+shader = ExtResource("2_tln2x")
+shader_parameter/enabled = false
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6h1mv"]
 size = Vector2(16.5, 12.25)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xp3lm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vfi7c"]
+
+[sub_resource type="Animation" id="Animation_mb4vr"]
+resource_name = "hurt"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("anim_sp:material:shader_parameter/enabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_ckv0q"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("anim_sp:material:shader_parameter/enabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_o73yy"]
+_data = {
+"RESET": SubResource("Animation_ckv0q"),
+"hurt": SubResource("Animation_mb4vr")
+}
 
 [node name="monster" type="CharacterBody2D"]
 y_sort_enabled = true
@@ -17,9 +59,6 @@ motion_mode = 1
 slide_on_ceiling = false
 wall_min_slide_angle = 0.0
 script = ExtResource("1_dr73e")
-
-[node name="navi_agent" type="NavigationAgent2D" parent="."]
-avoidance_enabled = true
 
 [node name="sight" type="RayCast2D" parent="."]
 
@@ -29,13 +68,10 @@ shape = SubResource("RectangleShape2D_lxfna")
 debug_color = Color(0, 0.556863, 0.317647, 0.419608)
 
 [node name="anim_sp" type="AnimatedSprite2D" parent="."]
-sprite_frames = ExtResource("3_eoweq")
-animation = &"attack"
-frame = 17
-frame_progress = 1.0
+material = SubResource("ShaderMaterial_7depo")
+sprite_frames = ExtResource("2_fqs0a")
+frame_progress = 0.53718
 offset = Vector2(0, -3)
-
-[node name="hp_bar" parent="." instance=ExtResource("3_m4f1c")]
 
 [node name="monster" type="Area2D" parent="."]
 
@@ -48,11 +84,20 @@ shape = SubResource("RectangleShape2D_6h1mv")
 [node name="coll" type="CollisionShape2D" parent="attack"]
 shape = SubResource("RectangleShape2D_xp3lm")
 
+[node name="detect_attack" type="Area2D" parent="."]
+
+[node name="coll" type="CollisionShape2D" parent="detect_attack"]
+shape = SubResource("RectangleShape2D_vfi7c")
+
 [node name="navi_timer" type="Timer" parent="."]
 wait_time = 0.5
 autostart = true
 
-[connection signal="velocity_computed" from="navi_agent" to="." method="_on_navi_agent_velocity_computed"]
+[node name="animation" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_o73yy")
+}
+
 [connection signal="animation_finished" from="anim_sp" to="." method="_on_animation_finished"]
 [connection signal="area_entered" from="monster" to="." method="_on_body_area_entered"]
 [connection signal="timeout" from="navi_timer" to="." method="_on_navi_timer_timeout"]

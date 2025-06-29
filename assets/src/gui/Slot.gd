@@ -1,7 +1,7 @@
 extends Panel
 
 
-var ItemClass = preload("res://assets/objects/ui/item.tscn")
+var ItemClass = preload("res://assets/objects/gui/item.tscn")
 var item = null
 # Called when the node enters the scene tree for the first time.
 func _ready():

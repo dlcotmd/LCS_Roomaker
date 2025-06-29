@@ -22,7 +22,7 @@ func _ready():
 	anim_sp = $anim_sp
 	attack_collision = $attack/coll
 
-func _physics_process(_delta):
+func _physics_process(_delta):	
 	Info.player_pos = global_position
 	max_hp = Info.player_max_hp
 	hp = Info.player_hp

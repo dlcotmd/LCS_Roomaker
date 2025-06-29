@@ -24,6 +24,7 @@ var detect_range : float
 
 var is_dead : bool = false
 var is_attacking : bool = false
+var is_shooting : bool = false
 
 var allow_meleeAttack : bool = true
 var allow_move : bool = true
@@ -55,14 +56,16 @@ var load_animation : SpriteFrames
 
 # Pointer--------------
 var anim_sp : AnimatedSprite2D
-var meleeAttack_area : Area2D
+var meleeAttack_collision : CollisionShape2D
+var meleeAttack_detect_collision : CollisionShape2D
 var collision : CollisionShape2D
 var area_collision : CollisionShape2D
 var sight : RayCast2D
 
 func _ready():
 	anim_sp = $anim_sp
-	meleeAttack_area = $attack
+	meleeAttack_collision = $attack/coll
+	meleeAttack_detect_collision = $detect_attack/coll
 	collision = $coll
 	area_collision = $monster/coll
 	sight = $sight
@@ -70,142 +73,131 @@ func _ready():
 	anim_sp.sprite_frames = load_animation
 	anim_sp.offset = texture_pivot
 	
+	anim_sp.material = anim_sp.material.duplicate()
+	
 	area_collision.shape = RectangleShape2D.new()
 	collision.shape = RectangleShape2D.new()
 	
 	#공격, 공격 감지 범위 collision 크기 위치 조정
-	$attack/coll.shape = RectangleShape2D.new()
-	$attack/coll.shape.size = meleeAttack_rect.size
-	$attack/coll.position = meleeAttack_rect.position
+	for coll in [meleeAttack_collision, meleeAttack_detect_collision]:
+		coll.shape = RectangleShape2D.new()
+		coll.shape.size = meleeAttack_rect.size
+		coll.position = meleeAttack_rect.position
 
 	collision.shape.size = collision_rect.size
 	collision.position = collision_rect.position
 	area_collision.position = collision_rect.position
 	area_collision.shape.size = collision_rect.size + Vector2(0.5, 0.5)
 	
-	$hp_bar.position.y = -collision_rect.size.y * 2.4
-	
 	anim_sp.play("idle")
 	if attack_method == "projectile":
 		projectile_delay = randf_range(projectile_delay_range[0], projectile_delay_range[1])
 
 func _physics_process(delta):
-	#print("움직임 :", allow_move, "근접 허용", allow_meleeAttack, "원거리 허용", allow_shoot)
-	if allow_move:
+	if allow_move and is_attacking == false and is_shooting == false and is_dead == false:
 		direction = (Info.player_pos - global_position).normalized()
 	else:
 		direction = Vector2.ZERO
 	
-	control_allowMovement()
-	control_meleeAttack_timer(delta)
+	control_attack_timer(delta)
+	control_attackAnim()
 	control_of_dir()
-	control_meleeAttack()
+	control_sight()
+
 	if attack_method == "projectile":
-		control_shoot_timer(delta)
-		control_projectile()
+		control_projectile(delta)
 		
 	velocity = velocity.move_toward(direction * speed, accel)
 	move_and_slide()
 
 func melee_attack():
-	allow_meleeAttack = false
+	if not allow_meleeAttack:
+		return
 	is_attacking = true
-	print('근접')
+	allow_move = false
 	anim_sp.play("attack")
 func shoot_projectile():
-	allow_shoot = false
-	is_attacking = true
-	print('원거리')
-	anim_sp.play("shoot")
-func control_allowMovement():
-	#-----------Raycast 코드-------------
+	Shoot.call(shoot_func, projectile_name, global_position + projectile_pos)
+
+func control_projectile(delta):
+	projectile_delay_timer += delta
+	
+	if anim_sp.animation == 'shoot' and float(anim_sp.frame) in shoot_frames and last_projectile_frame != int(anim_sp.frame):
+		shoot_projectile()
+		last_projectile_frame = int(anim_sp.frame)
+	
+	if projectile_delay_timer >= projectile_delay and allow_move == true and is_attacking == false and is_dead == false:
+		allow_move = false
+		is_shooting = true
+		anim_sp.play("shoot")
+		projectile_delay_timer = 0
+		projectile_delay = randf_range(projectile_delay_range[0], projectile_delay_range[1])
+func control_sight():
 	var player_distance = global_position.distance_to(Info.player_pos)
 	if player_distance <= detect_range:
 		sight.target_position = to_local(Info.player_pos + Vector2(0, 5))
-	
-	var can_see_player : bool = false
 	if sight.is_colliding():
 		if sight.get_collider() is Player:
-			can_see_player = true
+			allow_move = true
 		elif not sight.get_collider() is Monster:
-			can_see_player = false
-	#------------------------------------
-	
-	if is_attacking == false and is_dead == false and can_see_player == true:
-		allow_move = true
-	else:
-		allow_move = false
-		
-
-func control_meleeAttack_timer(delta):
-	# 타이머가 지나야 allow_attack을 true 해줌
-	if allow_move == false:
+			allow_move = false
+func control_attack_timer(delta):
+	if allow_meleeAttack:
 		return
 	meleeAttack_delay_timer += delta
 	if meleeAttack_delay_timer >= meleeAttack_delay:
 		allow_meleeAttack = true
 		meleeAttack_delay_timer = 0
-func control_shoot_timer(delta):
-	# 타이머가 지나야 allow_shoot을 true 해줌
-	if allow_move == false:
-		return
-	projectile_delay_timer += delta
-	if projectile_delay_timer >= projectile_delay:
-		allow_shoot = true
-		projectile_delay_timer = 0
-		projectile_delay = randf_range(projectile_delay_range[0], projectile_delay_range[1])
-
 func control_of_dir():
 	# 방향에 따른 애니메이션, 공격 범위 위치, 이미지 반전 조정
-	if allow_move == false:
-		return  # 움직일 수 없는 상태라면 그냥 작동 안함
-	if direction.x > 0.01:
+	if is_attacking or is_dead or is_shooting:
+		return  # 공격 중이거나 죽은 상태면 걷기 애니메이션 중단
+	if direction.x > 0:
 		anim_sp.play("walk")
 		anim_sp.offset.x = -texture_pivot.x
 		if attack_method == "projectile":
 			projectile_pos.x = abs(projectile_pos.x)
-		$attack/coll.position.x = meleeAttack_rect.position.x
+		meleeAttack_collision.position.x = meleeAttack_rect.position.x
+		meleeAttack_detect_collision.position.x = meleeAttack_rect.position.x
 		anim_sp.flip_h = true
-	elif direction.x < 0.01:
+	elif direction.x < 0:
 		anim_sp.play("walk")
 		anim_sp.offset.x = texture_pivot.x
 		if attack_method == "projectile":
-			projectile_pos.x = abs(projectile_pos.x) * -1
-		$attack/coll.position.x = -meleeAttack_rect.position.x
+			projectile_pos.x = -abs(projectile_pos.x)
+		meleeAttack_collision.position.x = -meleeAttack_rect.position.x
+		meleeAttack_detect_collision.position.x = -meleeAttack_rect.position.x
 		anim_sp.flip_h = false
 	else:
 		anim_sp.play("idle")
-
-func control_meleeAttack():
-	if allow_meleeAttack:
-		for area in meleeAttack_area.get_overlapping_areas():
+func control_attackAnim():
+	if is_attacking == false and is_dead == false and is_shooting == false:
+		for area in $detect_attack.get_overlapping_areas():
 			if area.name == "player" and area.get_parent() is Player:
 				melee_attack()
 				break
+
 	# 공격 중일 때만 프레임 체크
-	if anim_sp.animation == "attack" and (float(anim_sp.frame) in meleeAttack_frames) == true:
+	if anim_sp.animation == "attack":
 		# json에서 frames에 있는 값들이 float임 json엔 Float만 가능하나봄 ㅅㅂ
-		meleeAttack_area.monitorable = true
+		meleeAttack_collision.disabled = !(float(anim_sp.frame) in meleeAttack_frames)
 	else:
-		meleeAttack_area.monitorable = false
-func control_projectile():
-	if allow_shoot == true:
-		shoot_projectile()
-	if anim_sp.animation == 'shoot' and float(anim_sp.frame) in shoot_frames and last_projectile_frame != int(anim_sp.frame):
-		Shoot.call(shoot_func, projectile_name, global_position + projectile_pos)
-		last_projectile_frame = int(anim_sp.frame)
+		meleeAttack_collision.disabled = true
 
 func _on_animation_finished():
-	if anim_sp.animation == 'death':
-		Command.particle("blood_explosion", global_position)
-		queue_free()
-	if anim_sp.animation == 'shoot':
+	match anim_sp.animation:
+		"attack":
+			is_attacking = false
+			allow_move = true
+			allow_meleeAttack = false
+		"shoot":
 			last_projectile_frame = -1
-			is_attacking = false
-	if anim_sp.animation == 'attack':
-			is_attacking = false
+			is_shooting = false
+			allow_move = true
+		"death":
+			Command.particle("blood_explosion", global_position, Vector2(0, 0), Color(1, 1, 1, 1))
+			queue_free()
 func _on_body_area_entered(area):
-	print(area.name, "아레나에 들어왔다")
 	if area.name == "attack" and area.get_parent() is Player and is_dead == false:
 		Command.hurt(self, Info.player_attack_damage)
 		Command.apply_knockback(area.global_position, self, Info.player_knockback_force)

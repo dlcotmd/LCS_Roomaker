@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://bcrr5xvr045au"]
 
-[ext_resource type="Script" path="res://assets/src/ui/inv_control.gd" id="1_0ueyg"]
+[ext_resource type="Script" path="res://assets/src/ui/inventory.gd" id="1_0ueyg"]
 [ext_resource type="Texture2D" uid="uid://dn0syn1e1lvgt" path="res://assets/sprites/gui/inventory background.png" id="1_i88f5"]
 [ext_resource type="Texture2D" uid="uid://cs4bvpf560in7" path="res://assets/sprites/gui/inventory slot.png" id="2_m623n"]
-[ext_resource type="Script" path="res://assets/src/ui/Slot.gd" id="3_t0u0k"]
+[ext_resource type="Script" path="res://assets/src/gui/Slot.gd" id="3_t0u0k"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_l5t2q"]
 texture = ExtResource("2_m623n")
@@ -30,7 +30,6 @@ patch_margin_right = 10
 patch_margin_bottom = 10
 
 [node name="GridContainer" type="GridContainer" parent="."]
-anchors_preset = -1
 offset_left = -117.0
 offset_top = -27.0
 offset_right = 117.0

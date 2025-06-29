@@ -1,7 +1,7 @@
 extends Node2D
 
 var is_open = false
-const SlotClass = preload("res://assets/src/ui/Slot.gd")
+const SlotClass = preload("res://assets/objects/gui/item.tscn")
 @onready var inventory_slots = $GridContainer
 var holding_item = null
 
