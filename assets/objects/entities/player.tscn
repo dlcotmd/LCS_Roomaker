@@ -36,7 +36,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(0.627451, 0.647059, 0.647059, 0.941176)]
+"values": [Color(1, 1, 0.882353, 0.886275)]
 }
 
 [sub_resource type="Animation" id="Animation_af2q2"]
@@ -131,7 +131,7 @@ libraries = {
 speed_scale = 3.0
 
 [node name="CM" type="CanvasModulate" parent="."]
-color = Color(0.627451, 0.647059, 0.647059, 0.941176)
+color = Color(1, 1, 0.882353, 0.886275)
 
 [node name="inventory" parent="." instance=ExtResource("3_2r63r")]
 
