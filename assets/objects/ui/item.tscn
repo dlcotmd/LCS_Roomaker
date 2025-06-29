@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1lxu6gp34mf7"]
+
+[ext_resource type="Script" path="res://assets/src/ui/item.gd" id="1_up3i0"]
+[ext_resource type="Texture2D" uid="uid://bmb8aa8wtv0oa" path="res://assets/sprites/item/Gebo.png" id="2_qgmpr"]
+
+[node name="item" type="Node2D"]
+z_index = 1
+script = ExtResource("1_up3i0")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_left = 6.0
+offset_top = 2.0
+offset_right = 31.0
+offset_bottom = 45.0
+scale = Vector2(0.45, 0.45)
+mouse_filter = 2
+texture = ExtResource("2_qgmpr")

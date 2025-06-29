@@ -1,0 +1,6 @@
+{
+	"speed" : 70.0,
+	"damage" : 7.0,
+	"knockback" : 0.3,
+	"collision_size" : [15, 15]
+}
