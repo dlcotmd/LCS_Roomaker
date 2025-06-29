@@ -1,5 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://dxp0wcjcnnbqc"]
 
+
 [ext_resource type="Script" path="res://assets/src/objects/entities/monster.gd" id="1_dr73e"]
 [ext_resource type="SpriteFrames" uid="uid://c7du57vr7kqc4" path="res://assets/animations/crow.tres" id="2_yhu65"]
 [ext_resource type="PackedScene" uid="uid://cvgpfxfsp43j2" path="res://assets/objects/gui/hp_bar.tscn" id="3_m4f1c"]
