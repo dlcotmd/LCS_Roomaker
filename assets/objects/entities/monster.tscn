@@ -1,7 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://dxp0wcjcnnbqc"]
+[gd_scene load_steps=7 format=3 uid="uid://dxp0wcjcnnbqc"]
 
 [ext_resource type="Script" path="res://assets/src/objects/entities/monster.gd" id="1_dr73e"]
-[ext_resource type="Texture2D" uid="uid://c2kr5iqslkg51" path="res://assets/sprites/lights/point.png" id="2_585sp"]
 [ext_resource type="SpriteFrames" uid="uid://c7du57vr7kqc4" path="res://assets/animations/crow.tres" id="2_yhu65"]
 [ext_resource type="PackedScene" uid="uid://cvgpfxfsp43j2" path="res://assets/objects/gui/hp_bar.tscn" id="3_m4f1c"]
 
@@ -12,25 +11,12 @@ size = Vector2(16.5, 12.25)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xp3lm"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_58a47"]
-
 [node name="monster" type="CharacterBody2D"]
 y_sort_enabled = true
 motion_mode = 1
 slide_on_ceiling = false
 wall_min_slide_angle = 0.0
 script = ExtResource("1_dr73e")
-
-[node name="navi_agent" type="NavigationAgent2D" parent="."]
-avoidance_enabled = true
-
-[node name="shoot_marker" type="Marker2D" parent="."]
-visible = false
-
-[node name="debug_show" type="Sprite2D" parent="shoot_marker"]
-visible = false
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("2_585sp")
 
 [node name="sight" type="RayCast2D" parent="."]
 
@@ -47,6 +33,7 @@ offset = Vector2(0, -3)
 [node name="hp_bar" parent="." instance=ExtResource("3_m4f1c")]
 
 [node name="monster" type="Area2D" parent="."]
+disable_mode = 2
 
 [node name="coll" type="CollisionShape2D" parent="monster"]
 position = Vector2(0, 5.125)
@@ -56,19 +43,6 @@ shape = SubResource("RectangleShape2D_6h1mv")
 
 [node name="coll" type="CollisionShape2D" parent="attack"]
 shape = SubResource("RectangleShape2D_xp3lm")
-disabled = true
 
-[node name="attack_detect" type="Area2D" parent="."]
-
-[node name="coll" type="CollisionShape2D" parent="attack_detect"]
-visible = false
-shape = SubResource("RectangleShape2D_58a47")
-
-[node name="navi_timer" type="Timer" parent="."]
-wait_time = 0.5
-autostart = true
-
-[connection signal="velocity_computed" from="navi_agent" to="." method="_on_navi_agent_velocity_computed"]
 [connection signal="animation_finished" from="anim_sp" to="." method="_on_animation_finished"]
 [connection signal="area_entered" from="monster" to="." method="_on_body_area_entered"]
-[connection signal="timeout" from="navi_timer" to="." method="_on_navi_timer_timeout"]

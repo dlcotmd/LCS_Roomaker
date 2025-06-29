@@ -117,6 +117,7 @@ shape = SubResource("CircleShape2D_sdtky")
 disabled = true
 
 [node name="player" type="Area2D" parent="."]
+disable_mode = 2
 
 [node name="coll" type="CollisionShape2D" parent="player"]
 position = Vector2(0, 5.125)

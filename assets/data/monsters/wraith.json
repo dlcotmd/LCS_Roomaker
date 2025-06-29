@@ -1,5 +1,5 @@
 {
-	"hp" : 300,
+	"hp" : 20,
 	"speed" : 8.5,
 	"accel" : 2.0,
 	"detect_range" : 150,
@@ -9,7 +9,7 @@
 		"method" : "melee",
 		"damage" : 8,
 		"knockback" : 8.5,
-		"collision_rect" : [15, 5, 36, 36]
+		"collision" : [15, 5, 36, 36]
 	},
 	"animation" : {
 		"texture_pivot" : [-33, -5],

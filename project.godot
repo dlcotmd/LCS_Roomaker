@@ -20,6 +20,7 @@ config/icon="res://icon.png"
 Info="*res://assets/src/autoLoad/info.gd"
 Cfile="*res://assets/src/autoLoad/cfile.gd"
 Command="*res://assets/src/autoLoad/command.gd"
+Shoot="*res://assets/src/autoLoad/shoot.gd"
 
 [display]
 
