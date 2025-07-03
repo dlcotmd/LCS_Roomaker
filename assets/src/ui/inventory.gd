@@ -1,59 +1,58 @@
-extends Node2D
+extends Control
+
+@export var slot_active : Texture2D
+@export var slot_default : Texture2D
 
 var is_open = false
-const SlotClass = preload("res://assets/objects/gui/item.tscn")
-@onready var inventory_slots = $GridContainer
 var holding_item = null
 
+var slots : Array # 슬롯 자식 객체 저장 리스트
+
+# Pointer----------------------
+var slot_grid : GridContainer
+var back_panel : NinePatchRect
+
 func _ready():
-	close()
-	for inv_slot in inventory_slots.get_children():
-		inv_slot.connect("gui_input", Callable(self, "slot_gui_input").bind(inv_slot))
-		
-# 두 번째 인자 타입 제거
-func slot_gui_input(event: InputEvent, slot):
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			if holding_item != null:
-				if !slot.item:
-					slot.putIntoSlot(holding_item)
-					holding_item = null
-				else:
-					var temp_item = slot.item
-					slot.pickFromSlot()
-					temp_item.global_position = event.global_position
-					slot.putIntoSlot(holding_item)
-					holding_item = temp_item
-			elif slot.item:
-				holding_item = slot.item
-				slot.pickFromSlot()
-				holding_item.global_position = get_viewport().get_mouse_position()
+	slot_grid = $slot_grid
+	back_panel = $back_panel
+	load_slots()
 
-func _input(event):
-	if holding_item:
-		var mouse_pos = get_global_mouse_position()
-		var texture_rect = holding_item.get_node_or_null("TextureRect")
-		
-		if texture_rect and texture_rect.texture:
-			var tex_size = texture_rect.texture.get_size()
-			var offset = Vector2(1, 10)  # 가로 세로 8만큼 이동
-			holding_item.global_position = mouse_pos - tex_size * 0.5 + offset
+func read_slots():
+	# slots 리스트에 객체 불러와주는 함수
+	slots = []
+	slots = slot_grid.get_children()
+	
+func control_slots():
+	# slot 관리
+	for slot in slots:
+		var slot_panel = slot.find_child("panel")
+		var slot_center_pos = slot.global_position + Vector2(slot_panel.size.x/2, slot_panel.size.x/2)
+		$marker.global_position = slot_center_pos
+		if slot_center_pos.distance_to(get_global_mouse_position()) < slot_panel.size.x / 2:
+			#slot_panel.modulate = Color(5, 5, 5, 1)
+			slot_panel.texture = slot_active
 		else:
-			# fallback: 이미지 없을 경우 그냥 마우스 위치
-			holding_item.global_position = mouse_pos
+			slot_panel.texture = slot_default
+			#slot_panel.modulate = Color(1, 1, 1, 1)
 
+func draw_back_panel(row : int):
+	back_panel.size.y = row * 28
+
+func load_slots():
+	var slot_path = load("res://assets/objects/gui/inventory_slot.tscn")
+	for i in range(Info.inventory_max_slot):
+		var slot = slot_path.instantiate()
+		slots.append(slot)
+		slot_grid.add_child(slot)
 
 func _process(delta):
-	if Input.is_action_just_pressed("I"):
-		if is_open:
-			close()
-		else:
-			open()
-
-func open():
-	visible = true
-	is_open = true
+	read_slots()
+	control_slots()
 	
-func close():
-	visible = false
-	is_open = false
+	if Input.is_action_just_pressed("inventory"):
+		if is_open == true:
+			visible = false
+		elif is_open == false:
+			visible = true
+		is_open = !is_open
+	

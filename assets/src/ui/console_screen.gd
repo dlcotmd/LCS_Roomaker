@@ -10,10 +10,11 @@ func _ready():
 	inputBox = $input
 
 func _process(delta):
-	#print(history_command_list)
 	if Input.is_action_just_pressed("console"):
 		if off_console:
 			inputBox.grab_focus()
+			inputBox.text = "/"
+			inputBox.caret_column = inputBox.text.length()
 			index_num = 0
 			get_tree().paused = true
 			control_des_text()
@@ -27,6 +28,7 @@ func _process(delta):
 		var reverse_list = history_command_list.duplicate(false)
 		reverse_list.reverse()
 		inputBox.text = reverse_list[index_num]
+		inputBox.caret_column = inputBox.text.length()
 		index_num += 1
 
 func control_des_text():
@@ -49,22 +51,23 @@ func control_command(command_text : String):
 		elif sp_text[1] == 'speed':
 			Info.player_movement_speed = float(sp_text[2])
 		elif sp_text[1] == 'hp':
-			Info.player_hp = float(sp_text[2])
+			Info.player_hp = int(sp_text[2])
 		elif sp_text[1] == 'max_hp':
-			Info.player_max_hp = float(sp_text[2])
+			Info.player_max_hp = int(sp_text[2])
+		elif sp_text[1] == 'dash_delay':
+			Info.player_dash_delay = float(sp_text[2])
 	elif sp_text[0] == "/debug" and len(sp_text) == 2:
 		if sp_text[1] == 'dash_master':
-			Info.player_dash_amount = 99999999999
+			Info.player_dash_delay = 0.01
 		elif sp_text[1] == 'invincible':
 			Info.player_max_hp = 99999999999
 			Info.player_hp = 99999999999
 		elif sp_text[1] == 'GOD':
-			Info.player_dash_amount = 99999999999
+			Info.player_dash_delay = 0.01
 			Info.player_max_hp = 99999999999
 			Info.player_hp = 99999999999
 			Info.player_attack_damage = 99999
 			Info.player_knockback_force = 99
-			Info.player_dash_amount = 99999999999
 			Info.player_movement_speed = 120.0
 	elif sp_text[0] == "/projectile" and len(sp_text) == 4:
 		Command.summon_projectile(sp_text[1], Info.player_pos + Vector2(int(sp_text[2]), -int(sp_text[3])), Vector2(0, 0))

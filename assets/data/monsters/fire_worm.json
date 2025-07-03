@@ -14,7 +14,7 @@
 			"shoot_func" : "target_player",
 		},
 		"collision" : [15, 5, 30, 18],
-		"damage" : 3,
+		"damage" : 1,
 		"knockback" : 8.5,
 	},
 	"animation" : {

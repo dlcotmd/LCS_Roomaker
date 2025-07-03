@@ -26,7 +26,7 @@ func summon_monster(monster_name : String, pos : Vector2):
 	
 	monster.detect_range = monster_data["detect_range"]
 	
-	monster.meleeAttack_damage = monster_data["attack"]["damage"]
+	monster.meleeAttack_damage = int(monster_data["attack"]["damage"])
 	monster.attack_method = monster_data["attack"]["method"]
 	monster.knockback_force = monster_data["attack"]["knockback"]
 	monster.meleeAttack_rect = Rect2(monster_data["attack"]["collision"][0], monster_data["attack"]["collision"][1], monster_data["attack"]["collision"][2], monster_data["attack"]["collision"][3])
@@ -91,7 +91,7 @@ func apply_knockback(target_pos: Vector2, body: Node2D, force: float) -> void:
 # 카메라 흔드는 함수 / 흔들 카메라, 지속 시간, 흔들림 강도
 func shake_camera(camera: Camera2D, duration: float, intensity: float) -> void:
 	var time_elapsed = 0.0
-	intensity = clamp(intensity, 0, 40)
+	intensity = clamp(intensity, 0.5, 35)
 
 	var original_offset = camera.offset
 
@@ -127,27 +127,29 @@ func hurt(node, damage : float):
 	
 	if node is Player: # 데미지 받는 대상이 플레이어면
 		Info.player_hp -= damage
-		Command.shake_camera(node.find_child("cam"), 0.15, damage * 0.1)
-		node.find_child("animation").play("RESET")
+		Command.shake_camera(node.find_child("cam"), 0.13, damage * 4)
 		node.find_child("animation").play("hurt")
+		node.find_child("anim_sp").material.set_shader_parameter("enabled", true)
+		await get_tree().create_timer(0.3).timeout
+		node.find_child("anim_sp").material.set_shader_parameter("enabled", false)
 	else: # 플레이어가 아니라면
 		node.hp -= damage
-		get_tree().current_scene.find_child("all_entities").find_child("player").find_child("animation").play("impact_zoom")
-		Command.shake_camera(get_tree().current_scene.find_child("all_entities").find_child("player").find_child("cam"), 0.15, damage * 0.1)
+		Info.player.find_child("animation").play("impact_zoom")
+		Command.shake_camera(Info.player.find_child("cam"), 0.13, damage * 0.2)
 		Command.particle("attack_hit", node.global_position + Info.player_pos.direction_to(node.global_position).normalized() * 13, Info.player_pos.direction_to(node.global_position).normalized(), Color("#b81a33"))
-		node.find_child("animation").play("RESET")
-		node.find_child("animation").play("hurt")
+		node.find_child("anim_sp").material.set_shader_parameter("enabled", true)
 		timestopBBU(0.45, 0.5)
+		await get_tree().create_timer(0.1).timeout
+		node.find_child("anim_sp").material.set_shader_parameter("enabled", false)
 
 func kill(node : Node2D):
 	if node.is_dead:
 		return
 	if node.has_node("anim_sp") == false: # anim_sp가 없는 엔티티면 그냥 삭제
-		particle("blood_explosion", node.global_position)
 		queue_free()
 		return
-		
 	node.is_dead = true
+	node.find_child("coll").call_deferred("set", "disabled", true)
 	node.find_child("anim_sp").play("death")
 	
 func timestopBBU(scale : float, duration : float):

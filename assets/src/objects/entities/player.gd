@@ -14,15 +14,19 @@ var direction : Vector2
 var last_dir = 'front' # or "side", "back"
 var is_attacking : bool = false
 
+var allow_dash : bool = false
+var dash_timer : float = 0
+
 # Pointer--------------
 var anim_sp : AnimatedSprite2D
 var attack_collision : CollisionShape2D
 
 func _ready():
+	Info.player = self
 	anim_sp = $anim_sp
 	attack_collision = $attack/coll
 
-func _physics_process(_delta):	
+func _physics_process(delta):
 	Info.player_pos = global_position
 	max_hp = Info.player_max_hp
 	hp = Info.player_hp
@@ -32,6 +36,7 @@ func _physics_process(_delta):
 		
 	control_attackAnim()
 	control_of_dir()
+	dash_charge(delta)
 	velocity.x = move_toward(velocity.x, Info.player_movement_speed * direction.x, ACCEL)
 	velocity.y = move_toward(velocity.y, Info.player_movement_speed * direction.y, ACCEL)
 
@@ -77,9 +82,9 @@ func control_attackAnim():
 	
 	# 구르기 코드인데 아직 불안정 함(추후 수정 or 삭제 예정)
 	if Input.is_action_just_pressed("R_click"):
-		if Info.player_dash_amount > 0:
+		if allow_dash == true:
 			var power = 270 # 구르기 추가 예정
-			Command.shake_camera(get_tree().current_scene.find_child("all_entities").find_child("player").find_child("cam"), 0.15,  0.5)
+			Command.shake_camera(Info.player.find_child("cam"), 0.1,  0.5)
 			if last_dir == 'front':
 				velocity.y = power
 			elif last_dir == 'back':
@@ -89,17 +94,16 @@ func control_attackAnim():
 					velocity.x = power
 				elif anim_sp.flip_h == false:
 					velocity.x = -power
-			Info.player_dash_amount -= 1
-			if Info.player_dash_amount == 2:
-				dash_charge()
-			if Info.player_dash_amount == 1:
-				dash_charge()
-			if Info.player_dash_amount == 0:
-				dash_charge()
+			allow_dash = false
 
-func dash_charge():
-	await get_tree().create_timer(2).timeout
-	Info.player_dash_amount += 1
+func dash_charge(delta):
+	if allow_dash == true:
+		return
+
+	dash_timer += delta
+	if dash_timer > Info.player_dash_delay:
+		allow_dash = true
+		dash_timer = 0
 
 func _on_animation_finished():
 	# 원래는 애니메이션이 끝나면 발동되는 함수이지만,

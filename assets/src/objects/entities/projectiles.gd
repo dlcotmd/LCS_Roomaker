@@ -39,8 +39,8 @@ func _on_body_entered(body):
 	if body.name == 'tiles':
 		hit()
 	if body is Player:
-		Command.hurt(get_tree().current_scene.find_child("all_entities").find_child("player"), damage)
-		Command.apply_knockback(global_position, get_tree().current_scene.find_child("all_entities").find_child("player"), knockback)
+		Command.hurt(Info.player, damage)
+		Command.apply_knockback(global_position, Info.player, knockback)
 		hit()
 
 func _on_animation_finished():

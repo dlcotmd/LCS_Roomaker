@@ -30,7 +30,7 @@ var allow_meleeAttack : bool = true
 var allow_move : bool = true
 var allow_shoot : bool = true
 
-var meleeAttack_damage : float
+var meleeAttack_damage : int
 var meleeAttack_delay : float
 var meleeAttack_delay_timer : float = 0
 var meleeAttack_rect : Rect2
@@ -94,7 +94,7 @@ func _ready():
 		projectile_delay = randf_range(projectile_delay_range[0], projectile_delay_range[1])
 
 func _physics_process(delta):
-	if allow_move and is_attacking == false and is_shooting == false and is_dead == false:
+	if global_position.distance_to(Info.player_pos) > 18.0 and allow_move == true and is_attacking == false and is_shooting == false and is_dead == false:
 		direction = (Info.player_pos - global_position).normalized()
 	else:
 		direction = Vector2.ZERO
@@ -195,7 +195,14 @@ func _on_animation_finished():
 			is_shooting = false
 			allow_move = true
 		"death":
-			Command.particle("blood_explosion", global_position, Vector2(0, 0), Color(1, 1, 1, 1))
+			var sp_rect = anim_sp.sprite_frames.get_frame_texture("idle", 0).get_image().get_used_rect()
+			var area = sp_rect.size.x * sp_rect.size.y
+			var density = 0.0025  # 면적당 파티클 개수 비율 (조절 가능)
+			var particle_count = int(area * density)
+			for i in range(particle_count):
+				var rand_offset = Vector2(randf_range(-sp_rect.size.x / 2, sp_rect.size.x / 2),randf_range(-sp_rect.size.y / 2, sp_rect.size.y / 2))
+				var spawn_pos = global_position + rand_offset
+				Command.particle("blood_explosion", spawn_pos)
 			queue_free()
 func _on_body_area_entered(area):
 	if area.name == "attack" and area.get_parent() is Player and is_dead == false:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dxp0wcjcnnbqc"]
+[gd_scene load_steps=9 format=3 uid="uid://dxp0wcjcnnbqc"]
 
 [ext_resource type="Script" path="res://assets/src/objects/entities/monster.gd" id="1_dr73e"]
 [ext_resource type="SpriteFrames" uid="uid://bxaoa8ti5wog1" path="res://assets/animations/monsters/nacromancer.tres" id="2_fqs0a"]
@@ -17,42 +17,6 @@ size = Vector2(16.5, 12.25)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vfi7c"]
 
-[sub_resource type="Animation" id="Animation_mb4vr"]
-resource_name = "hurt"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("anim_sp:material:shader_parameter/enabled")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-
-[sub_resource type="Animation" id="Animation_ckv0q"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("anim_sp:material:shader_parameter/enabled")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_o73yy"]
-_data = {
-"RESET": SubResource("Animation_ckv0q"),
-"hurt": SubResource("Animation_mb4vr")
-}
-
 [node name="monster" type="CharacterBody2D"]
 y_sort_enabled = true
 motion_mode = 1
@@ -65,7 +29,6 @@ script = ExtResource("1_dr73e")
 [node name="coll" type="CollisionShape2D" parent="."]
 position = Vector2(0, 6)
 shape = SubResource("RectangleShape2D_lxfna")
-debug_color = Color(0, 0.556863, 0.317647, 0.419608)
 
 [node name="anim_sp" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_7depo")
@@ -92,11 +55,6 @@ shape = SubResource("RectangleShape2D_vfi7c")
 [node name="navi_timer" type="Timer" parent="."]
 wait_time = 0.5
 autostart = true
-
-[node name="animation" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_o73yy")
-}
 
 [connection signal="animation_finished" from="anim_sp" to="." method="_on_animation_finished"]
 [connection signal="area_entered" from="monster" to="." method="_on_body_area_entered"]
