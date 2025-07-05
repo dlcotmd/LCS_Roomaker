@@ -25,6 +25,7 @@ func _ready():
 	visibleBox.rect = Rect2(-anim_sp.sprite_frames.get_frame_texture("shoot", 0).get_size().x * 10 / 2, -anim_sp.sprite_frames.get_frame_texture("shoot", 0).get_size().y * 10 / 2, anim_sp.sprite_frames.get_frame_texture("shoot", 0).get_size().x * 10, anim_sp.sprite_frames.get_frame_texture("shoot", 0).get_size().y * 10)
 	
 	anim_sp.rotation = dir.angle()
+	collision.rotation = dir.angle()
 	anim_sp.play("flying")
 	
 func _process(delta):
@@ -32,6 +33,7 @@ func _process(delta):
 
 func hit():
 	dir = Vector2.ZERO
+	collision.set_deferred("disabled", true)
 	anim_sp.rotation = 0
 	anim_sp.play("hit")
 

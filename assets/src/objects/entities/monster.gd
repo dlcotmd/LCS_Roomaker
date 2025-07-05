@@ -152,8 +152,13 @@ func control_of_dir():
 	# 방향에 따른 애니메이션, 공격 범위 위치, 이미지 반전 조정
 	if is_attacking or is_dead or is_shooting:
 		return  # 공격 중이거나 죽은 상태면 걷기 애니메이션 중단
-	if direction.x > 0:
+	
+	if direction.length() > 0:
 		anim_sp.play("walk")
+	elif direction.length() == 0:
+		anim_sp.play("idle")
+	
+	if direction.x > 0:
 		anim_sp.offset.x = -texture_pivot.x
 		if attack_method == "projectile":
 			projectile_pos.x = abs(projectile_pos.x)
@@ -161,7 +166,6 @@ func control_of_dir():
 		meleeAttack_detect_collision.position.x = meleeAttack_rect.position.x
 		anim_sp.flip_h = true
 	elif direction.x < 0:
-		anim_sp.play("walk")
 		anim_sp.offset.x = texture_pivot.x
 		if attack_method == "projectile":
 			projectile_pos.x = -abs(projectile_pos.x)

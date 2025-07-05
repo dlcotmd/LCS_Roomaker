@@ -6,13 +6,12 @@ extends Node
 # 몬스터 소환 함수 / 몬스터 이름, 생성 할 좌표
 func summon_monster(monster_name : String, pos : Vector2):
 	if get_tree().current_scene.name != 'play_scene':
-		print('현재 게임 진행 중이 아니라 소환 할 수 없습니다.')
 		return
 	
 	var monster_data = Cfile.get_jsonData("res://assets/data/monsters/" + monster_name + ".json")
 
 	if monster_data == null:
-		print('데이터에 없는 존재')
+		Command.error('데이터에 없는 객체입니다.')
 		return
 	
 	var monster_path = preload("res://assets/objects/entities/monster.tscn")
@@ -49,12 +48,11 @@ func summon_monster(monster_name : String, pos : Vector2):
 
 func summon_projectile(project_name : String, pos : Vector2, dir : Vector2 = Vector2(0, 0)):
 	if get_tree().current_scene.name != 'play_scene':
-		print('현재 게임 진행 중이 아니라 소환 할 수 없습니다.')
 		return
 	
 	var project_data = Cfile.get_jsonData("res://assets/data/projectiles/" + project_name + ".json")
 	if project_data == null:
-		print('데이터에 없는 존재')
+		Command.error('데이터에 없는 객체입니다.')
 		return
 	
 	var pro_path = preload("res://assets/objects/entities/projectiles.tscn")
@@ -63,7 +61,7 @@ func summon_projectile(project_name : String, pos : Vector2, dir : Vector2 = Vec
 	pro.dir = dir
 	pro.damage = project_data["damage"]
 	pro.knockback = project_data["knockback"]
-	pro.collision_size = Vector2(project_data["collision_size"][0], project_data["collision_size"][0])
+	pro.collision_size = Vector2(project_data["collision_size"][0], project_data["collision_size"][1])
 	
 	pro.find_child("anim_sp").sprite_frames = load("res://assets/animations/projectiles/" + project_name + ".tres")
 
@@ -93,19 +91,17 @@ func shake_camera(camera: Camera2D, duration: float, intensity: float) -> void:
 	var time_elapsed = 0.0
 	intensity = clamp(intensity, 0.5, 35)
 
-	var original_offset = camera.offset
-
 	while time_elapsed < duration:
 		var shake_offset = Vector2(
 			randf_range(-intensity, intensity),
 			randf_range(-intensity, intensity)
 		)
-		camera.offset = original_offset + shake_offset
+		camera.offset = shake_offset
 
 		await get_tree().process_frame
 		time_elapsed += get_process_delta_time()
 
-	camera.offset = original_offset
+	camera.offset = Vector2(0, 0)
 
 # 애니메이션 파티클 소환 함수 / 파티클 이름, 생성 위치, 바라볼 방향, 색상 변경 할 색상
 func particle(par_name : String, pos : Vector2, dir : Vector2 = Vector2(0, 0), color : Color = Color(1, 1, 1, 1)):
@@ -127,15 +123,15 @@ func hurt(node, damage : float):
 	
 	if node is Player: # 데미지 받는 대상이 플레이어면
 		Info.player_hp -= damage
-		Command.shake_camera(node.find_child("cam"), 0.13, damage * 4)
 		node.find_child("animation").play("hurt")
+		Command.shake_camera(node.find_child("cam"), 0.08, damage * 8)
 		node.find_child("anim_sp").material.set_shader_parameter("enabled", true)
-		await get_tree().create_timer(0.3).timeout
+		await get_tree().create_timer(0.2).timeout
 		node.find_child("anim_sp").material.set_shader_parameter("enabled", false)
 	else: # 플레이어가 아니라면
 		node.hp -= damage
 		Info.player.find_child("animation").play("impact_zoom")
-		Command.shake_camera(Info.player.find_child("cam"), 0.13, damage * 0.2)
+		Command.shake_camera(Info.player.find_child("cam"), 0.04, damage * 0.8)
 		Command.particle("attack_hit", node.global_position + Info.player_pos.direction_to(node.global_position).normalized() * 13, Info.player_pos.direction_to(node.global_position).normalized(), Color("#b81a33"))
 		node.find_child("anim_sp").material.set_shader_parameter("enabled", true)
 		timestopBBU(0.45, 0.5)
@@ -156,3 +152,14 @@ func timestopBBU(scale : float, duration : float):
 	Engine.time_scale = scale
 	await get_tree().create_timer(duration * scale).timeout
 	Engine.time_scale = 1.0
+	
+func error(text : String):
+	if get_tree().current_scene.name != 'play_scene':
+		return
+	
+	var error_text_path = load("res://assets/objects/gui/error_text.tscn")
+	var error_text = error_text_path.instantiate()
+	
+	error_text.error = text
+	get_tree().current_scene.find_child("front_ui").add_child(error_text)
+	

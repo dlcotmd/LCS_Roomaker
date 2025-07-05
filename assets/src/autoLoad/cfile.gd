@@ -18,7 +18,6 @@ func get_filesPath(folder_path: String, extension: String) -> Array:
 	var dir := DirAccess.open(folder_path)
 	
 	if dir == null:
-		print("디렉토리를 열 수 없습니다: ", folder_path)
 		return file_list
 	
 	dir.list_dir_begin()

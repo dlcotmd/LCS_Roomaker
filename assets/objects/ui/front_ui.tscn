@@ -4,9 +4,9 @@
 [ext_resource type="Texture2D" uid="uid://cop1ylcxghex8" path="res://assets/sprites/gui/health.png" id="1_kaxaf"]
 [ext_resource type="Texture2D" uid="uid://di76rsw4h5ulk" path="res://assets/sprites/gui/progress_bar/under.png" id="2_1udac"]
 [ext_resource type="Texture2D" uid="uid://6qqh6fa0pdpt" path="res://assets/sprites/gui/progress_bar/over.png" id="3_jetyh"]
-[ext_resource type="Texture2D" uid="uid://tatf430r4uay" path="res://assets/sprites/gui/heart/full2.png" id="3_n4763"]
+[ext_resource type="Texture2D" uid="uid://pw0yfl6svhf" path="res://assets/sprites/gui/heart/full.png" id="3_tko66"]
 [ext_resource type="Texture2D" uid="uid://cs5im8lv78lop" path="res://assets/sprites/gui/progress_bar/progress.png" id="4_2g3kh"]
-[ext_resource type="Texture2D" uid="uid://c3pl6hofmvkd" path="res://assets/sprites/gui/heart/half2.png" id="4_qo5dm"]
+[ext_resource type="Texture2D" uid="uid://bnunh48wynaqp" path="res://assets/sprites/gui/heart/half.png" id="4_7u78s"]
 [ext_resource type="Texture2D" uid="uid://cjcov6by61u8q" path="res://assets/sprites/gui/dash_bar/under.png" id="8_l1cy3"]
 [ext_resource type="PackedScene" uid="uid://drlu6ws1m4fwd" path="res://assets/objects/gui/player_heart.tscn" id="8_qp00q"]
 [ext_resource type="PackedScene" uid="uid://bcrr5xvr045au" path="res://assets/objects/ui/inventory.tscn" id="8_un75y"]
@@ -17,8 +17,8 @@
 [node name="front_ui" type="CanvasLayer"]
 script = ExtResource("1_g3hkb")
 heart = ExtResource("8_qp00q")
-heart_full = ExtResource("3_n4763")
-heart_half = ExtResource("4_qo5dm")
+heart_full = ExtResource("3_tko66")
+heart_half = ExtResource("4_7u78s")
 
 [node name="player_ui" type="Node2D" parent="."]
 
