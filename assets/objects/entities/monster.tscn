@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://dxp0wcjcnnbqc"]
 
 [ext_resource type="Script" path="res://assets/src/objects/entities/monster.gd" id="1_dr73e"]
-[ext_resource type="SpriteFrames" uid="uid://bxaoa8ti5wog1" path="res://assets/animations/monsters/nacromancer.tres" id="2_fqs0a"]
 [ext_resource type="Shader" uid="uid://6jcd5ivo3p7s" path="res://assets/shaders/hit_flash.tres" id="2_tln2x"]
+[ext_resource type="SpriteFrames" uid="uid://dkrctcqtyr44m" path="res://assets/animations/monsters/slime.tres" id="3_fotdh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lxfna"]
 
@@ -32,8 +32,8 @@ shape = SubResource("RectangleShape2D_lxfna")
 
 [node name="anim_sp" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_7depo")
-sprite_frames = ExtResource("2_fqs0a")
-frame_progress = 0.53718
+sprite_frames = ExtResource("3_fotdh")
+animation = &"attack"
 offset = Vector2(0, -3)
 
 [node name="monster" type="Area2D" parent="."]
