@@ -40,7 +40,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(1, 1, 0.882353, 0.886275)]
+"values": [Color(1, 1, 0.882, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_af2q2"]
@@ -56,7 +56,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.2, 2.5),
 "transitions": PackedFloat32Array(0.233258, 5.09824, 1),
 "update": 0,
-"values": [Color(1, 1, 0.882353, 0.886275), Color(1, 0.819608, 0.752941, 0.886275), Color(1, 1, 0.882353, 0.886275)]
+"values": [Color(1, 1, 0.882353, 1), Color(1, 0.819608, 0.752941, 1), Color(1, 1, 0.882353, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_s4cmh"]
@@ -84,7 +84,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.3),
 "transitions": PackedFloat32Array(0.258816, 3.13834, 1),
 "update": 0,
-"values": [Color(1, 1, 0.882353, 0.886275), Color(1.05, 1.05, 0.95, 1), Color(1, 1, 0.882, 0.886)]
+"values": [Color(1, 1, 0.882353, 0.886275), Color(1.05098, 1.05098, 0.94902, 1), Color(1, 1, 0.882353, 1)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_45tr8"]
@@ -102,8 +102,8 @@ script = ExtResource("1_rih66")
 
 [node name="anim_sp" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_xw84m")
-position = Vector2(0, -1)
 sprite_frames = ExtResource("2_h1xb3")
+animation = &"idle"
 
 [node name="coll" type="CollisionShape2D" parent="."]
 position = Vector2(0, 5)
@@ -136,7 +136,7 @@ libraries = {
 speed_scale = 3.0
 
 [node name="CM" type="CanvasModulate" parent="."]
-color = Color(1, 1, 0.882353, 0.886275)
+color = Color(1, 1, 0.882, 1)
 
 [connection signal="animation_finished" from="anim_sp" to="." method="_on_animation_finished"]
 [connection signal="area_entered" from="player" to="." method="_on_body_area_entered"]

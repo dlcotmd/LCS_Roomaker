@@ -45,6 +45,7 @@ var projectile_name : String
 var projectile_delay_range : Array # 랜덤한 딜레이 범위를 위한 변수
 
 var last_projectile_frame : int # 총알 한 번에 여러개 소환 막기
+var last_meleeAttack_frame : int # 근접 공격 한 번에 여러번 막기
 
 var shoot_func : String # 어떻게 날릴지 형식
 var shoot_frames : Array # 딱 날리는 프레임들
@@ -172,8 +173,7 @@ func control_of_dir():
 		meleeAttack_collision.position.x = -meleeAttack_rect.position.x
 		meleeAttack_detect_collision.position.x = -meleeAttack_rect.position.x
 		anim_sp.flip_h = false
-	else:
-		anim_sp.play("idle")
+
 func control_attackAnim():
 	if is_attacking == false and is_dead == false and is_shooting == false:
 		for area in $detect_attack.get_overlapping_areas():
@@ -182,18 +182,20 @@ func control_attackAnim():
 				break
 
 	# 공격 중일 때만 프레임 체크
-	if anim_sp.animation == "attack":
+	if anim_sp.animation == "attack" and float(anim_sp.frame) in meleeAttack_frames and last_meleeAttack_frame != anim_sp.frame:
 		# json에서 frames에 있는 값들이 float임 json엔 Float만 가능하나봄 ㅅㅂ
-		meleeAttack_collision.disabled = !(float(anim_sp.frame) in meleeAttack_frames)
+		meleeAttack_collision.disabled = false
+		Sound.force_play("small_whoosh")
+		last_meleeAttack_frame = int(anim_sp.frame)
 	else:
 		meleeAttack_collision.disabled = true
-
 func _on_animation_finished():
 	match anim_sp.animation:
 		"attack":
 			is_attacking = false
 			allow_move = true
 			allow_meleeAttack = false
+			last_meleeAttack_frame = -1
 		"shoot":
 			last_projectile_frame = -1
 			is_shooting = false
@@ -203,6 +205,7 @@ func _on_animation_finished():
 			var area = sp_rect.size.x * sp_rect.size.y
 			var density = 0.0025  # 면적당 파티클 개수 비율 (조절 가능)
 			var particle_count = int(area * density)
+			Sound.force_play("blood_squishy", 12)
 			for i in range(particle_count):
 				var rand_offset = Vector2(randf_range(-sp_rect.size.x / 2, sp_rect.size.x / 2),randf_range(-sp_rect.size.y / 2, sp_rect.size.y / 2))
 				var spawn_pos = global_position + rand_offset

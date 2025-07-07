@@ -43,8 +43,12 @@ func _physics_process(delta):
 	move_and_slide()
 
 func melee_attack():
+	if is_attacking == true:
+		return
 	is_attacking = true
 	direction = Vector2(0, 0)
+	Sound.force_play("small_whoosh", 20)
+	Sound.force_play("swing_sword", 1)
 	anim_sp.play("attack_" + last_dir)
 
 func control_of_dir():
@@ -77,11 +81,11 @@ func control_attackAnim():
 		elif anim_sp.frame != 1:
 			attack_collision.disabled = true
 
-	if Input.is_action_just_pressed("L_click"):
+	if Input.is_action_just_pressed("melee_attack"):
 		melee_attack()
 	
 	# 구르기 코드인데 아직 불안정 함(추후 수정 or 삭제 예정)
-	if Input.is_action_just_pressed("R_click"):
+	if Input.is_action_just_pressed("dash"):
 		if allow_dash == true:
 			var power = 270 # 구르기 추가 예정
 			Command.shake_camera(Info.player.find_child("cam"), 0.1,  0.5)

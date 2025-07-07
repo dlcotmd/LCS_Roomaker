@@ -3,27 +3,30 @@ extends CanvasLayer
 @export var heart : PackedScene
 @export var heart_full : Texture2D
 @export var heart_half : Texture2D
+@export var detect_item_range : float = 40
+
+var near_dropItem : Area2D
 
 # Pointer----------------
 var dash_bar : TextureProgressBar
 var heart_container : HBoxContainer
+var item_des : Control
 
 func _ready():
 	dash_bar = $player_ui/V/dash
 	heart_container = $player_ui/V/H
+	item_des = $item_des
 
-func _process(_delta):
+func _process(delta):
+	control_item_des()
 	control_dash_bar()
 	control_player_heart()
-	#$player_ui/lv/hp.value = Info.player_hp
-	#$player_ui/lv/hp.max_value = Info.player_max_hp
-	#$player_ui/lv/energy.value = 100
 
 func spawn_heart(spawn_count : int):
 	for i in range(spawn_count):
 		var heart = heart.instantiate()
 		heart_container.add_child(heart)
-			
+
 func control_dash_bar():
 	if dash_bar.value == 0:
 		dash_bar.visible = false
@@ -57,3 +60,21 @@ func control_player_heart():
 			texture_rect.texture = heart_half
 		else:
 			texture_rect.texture = null  # 비어 있는 하트
+
+func control_item_des():
+	for entity in Info.all_entities:
+		if entity is DropItem and entity.global_position:
+			if near_dropItem == null:
+				near_dropItem = entity
+			else:
+				if entity.global_position.distance_to(Info.player_pos) < near_dropItem.global_position.distance_to(Info.player_pos):
+					near_dropItem = entity
+	# 가장 가까운 아이템 마저도 플레이어와 거리가 detect_item_range 초과하면 그냥 가까운 아이템 없음
+	if near_dropItem != null and near_dropItem.global_position.distance_to(Info.player_pos) > detect_item_range:
+		near_dropItem = null
+		
+	if near_dropItem != null:
+		item_des.visible = true
+		item_des.text = "[b]<" + near_dropItem.itemName + ">[/b][color=#747474] ㅣ " + near_dropItem.itemType + "[/color]\n\n" + near_dropItem.itemDes
+	elif near_dropItem == null:
+		item_des.visible = false

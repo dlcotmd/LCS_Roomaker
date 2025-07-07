@@ -16,13 +16,16 @@ var player_knockback_force : float = 1.8
 var player_movement_speed : float = 55.0
 
 var inventory_max_slot : int = 9
+var all_entities : Array = []
 
 # 풀 스크린 온 오프 / 풀 스크린 키 = F11 or F
 var full_screen : bool = false
-func _process(_delta):	
+func _process(_delta):
 	if Input.is_action_just_pressed("full_screen"):
 		if full_screen:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 		else:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
 		full_screen = !full_screen
+	all_entities = get_tree().current_scene.find_child("all_entities").get_children().duplicate()
+		

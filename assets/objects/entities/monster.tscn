@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://dxp0wcjcnnbqc"]
+[gd_scene load_steps=10 format=3 uid="uid://dxp0wcjcnnbqc"]
 
 [ext_resource type="Script" path="res://assets/src/objects/entities/monster.gd" id="1_dr73e"]
 [ext_resource type="SpriteFrames" uid="uid://bxaoa8ti5wog1" path="res://assets/animations/monsters/nacromancer.tres" id="2_fqs0a"]
 [ext_resource type="Shader" uid="uid://6jcd5ivo3p7s" path="res://assets/shaders/hit_flash.tres" id="2_tln2x"]
+[ext_resource type="Texture2D" uid="uid://tatf430r4uay" path="res://assets/sprites/gui/heart/full2.png" id="4_ftgm2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lxfna"]
 
@@ -34,7 +35,6 @@ shape = SubResource("RectangleShape2D_lxfna")
 material = SubResource("ShaderMaterial_7depo")
 sprite_frames = ExtResource("2_fqs0a")
 frame_progress = 0.53718
-offset = Vector2(0, -3)
 
 [node name="monster" type="Area2D" parent="."]
 
@@ -55,6 +55,13 @@ shape = SubResource("RectangleShape2D_vfi7c")
 [node name="navi_timer" type="Timer" parent="."]
 wait_time = 0.5
 autostart = true
+
+[node name="low_center" type="Sprite2D" parent="."]
+visible = false
+z_index = 4
+position = Vector2(0, 4.76837e-07)
+scale = Vector2(0.25, 0.227273)
+texture = ExtResource("4_ftgm2")
 
 [connection signal="animation_finished" from="anim_sp" to="." method="_on_animation_finished"]
 [connection signal="area_entered" from="monster" to="." method="_on_body_area_entered"]

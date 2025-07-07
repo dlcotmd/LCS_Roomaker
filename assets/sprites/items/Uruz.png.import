@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://73pngv66k3l3"
-path="res://.godot/imported/Uruz.png-52ea542770bc9bbde09c45c34d7d33cb.ctex"
+uid="uid://5xxntqw343lf"
+path="res://.godot/imported/uruz.png-468b64146a97479b8f31c094b06874f5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/items/Uruz.png"
-dest_files=["res://.godot/imported/Uruz.png-52ea542770bc9bbde09c45c34d7d33cb.ctex"]
+source_file="res://assets/sprites/items/uruz.png"
+dest_files=["res://.godot/imported/uruz.png-468b64146a97479b8f31c094b06874f5.ctex"]
 
 [params]
 
