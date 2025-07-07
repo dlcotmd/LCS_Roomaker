@@ -68,7 +68,7 @@ text = "[ UP-arrow : 이전 명령어 ]
 
 몹 소환 l /summon <name> <x> <y>
 파티클ㅣ/particle <name> <x> <y>
-능력치ㅣ/state <speed, damage, knockback, hp, max_hp> <value(-, +)>
+능력치ㅣ/state <speed, damage, knockback, hp, max_hp, dash_delay> <value(-, +)>
 [rainbow freq=0.3 sat=0.14 val=0.5 seed=0.1]디버그ㅣ/debug <GOD, dash_master, invincible> [/rainbow]"
 
 [node name="des2" type="RichTextLabel" parent="."]

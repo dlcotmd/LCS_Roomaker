@@ -277,7 +277,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_031jo")
 }],
 "loop": true,
-"name": &"default",
+"name": &"idle",
 "speed": 8.0
 }, {
 "frames": [{

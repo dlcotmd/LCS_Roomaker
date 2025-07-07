@@ -6,7 +6,7 @@
 	"collision" : [0, 8, 20, 12],
 	"attack" : {
 		"delay" : 0.8,
-		"damage" : 5.5,
+		"damage" : 1,
 		"knockback" : 6,
 		"method" : "melee",
 		"collision" : [15, 7, 38, 36]

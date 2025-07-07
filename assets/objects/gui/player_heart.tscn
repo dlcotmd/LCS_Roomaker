@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://drlu6ws1m4fwd"]
+
+[ext_resource type="Texture2D" uid="uid://c6kvbjv0uv61a" path="res://assets/sprites/gui/heart/under.png" id="1_p6cr0"]
+[ext_resource type="Texture2D" uid="uid://doq3arfo8sq6n" path="res://assets/sprites/gui/heart/over.png" id="2_fcn1l"]
+
+[node name="player_heart" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="under" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(8, 8)
+texture = ExtResource("1_p6cr0")
+
+[node name="over" type="Sprite2D" parent="."]
+z_index = 1
+position = Vector2(8, 8)
+texture = ExtResource("2_fcn1l")
+
+[node name="progress" type="Sprite2D" parent="."]
+position = Vector2(8, 8)

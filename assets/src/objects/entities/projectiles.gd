@@ -25,6 +25,7 @@ func _ready():
 	visibleBox.rect = Rect2(-anim_sp.sprite_frames.get_frame_texture("shoot", 0).get_size().x * 10 / 2, -anim_sp.sprite_frames.get_frame_texture("shoot", 0).get_size().y * 10 / 2, anim_sp.sprite_frames.get_frame_texture("shoot", 0).get_size().x * 10, anim_sp.sprite_frames.get_frame_texture("shoot", 0).get_size().y * 10)
 	
 	anim_sp.rotation = dir.angle()
+	collision.rotation = dir.angle()
 	anim_sp.play("flying")
 	
 func _process(delta):
@@ -32,6 +33,7 @@ func _process(delta):
 
 func hit():
 	dir = Vector2.ZERO
+	collision.set_deferred("disabled", true)
 	anim_sp.rotation = 0
 	anim_sp.play("hit")
 
@@ -39,8 +41,8 @@ func _on_body_entered(body):
 	if body.name == 'tiles':
 		hit()
 	if body is Player:
-		Command.hurt(get_tree().current_scene.find_child("all_entities").find_child("player"), damage)
-		Command.apply_knockback(global_position, get_tree().current_scene.find_child("all_entities").find_child("player"), knockback)
+		Command.hurt(Info.player, damage)
+		Command.apply_knockback(global_position, Info.player, knockback)
 		hit()
 
 func _on_animation_finished():

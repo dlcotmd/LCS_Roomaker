@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://m85kis37rje5"]
+
+[ext_resource type="Texture2D" uid="uid://br5lwx1q0fkpe" path="res://assets/sprites/gui/panels/gothic_rect.png" id="1_yxhtq"]
+
+[node name="inventory_slot" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="panel" type="NinePatchRect" parent="."]
+layout_mode = 0
+offset_right = 22.0
+offset_bottom = 22.0
+texture = ExtResource("1_yxhtq")
+patch_margin_left = 4
+patch_margin_top = 4
+patch_margin_right = 4
+patch_margin_bottom = 4

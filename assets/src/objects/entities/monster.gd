@@ -30,7 +30,7 @@ var allow_meleeAttack : bool = true
 var allow_move : bool = true
 var allow_shoot : bool = true
 
-var meleeAttack_damage : float
+var meleeAttack_damage : int
 var meleeAttack_delay : float
 var meleeAttack_delay_timer : float = 0
 var meleeAttack_rect : Rect2
@@ -45,6 +45,7 @@ var projectile_name : String
 var projectile_delay_range : Array # 랜덤한 딜레이 범위를 위한 변수
 
 var last_projectile_frame : int # 총알 한 번에 여러개 소환 막기
+var last_meleeAttack_frame : int # 근접 공격 한 번에 여러번 막기
 
 var shoot_func : String # 어떻게 날릴지 형식
 var shoot_frames : Array # 딱 날리는 프레임들
@@ -94,7 +95,7 @@ func _ready():
 		projectile_delay = randf_range(projectile_delay_range[0], projectile_delay_range[1])
 
 func _physics_process(delta):
-	if allow_move and is_attacking == false and is_shooting == false and is_dead == false:
+	if global_position.distance_to(Info.player_pos) > 18.0 and allow_move == true and is_attacking == false and is_shooting == false and is_dead == false:
 		direction = (Info.player_pos - global_position).normalized()
 	else:
 		direction = Vector2.ZERO
@@ -152,8 +153,13 @@ func control_of_dir():
 	# 방향에 따른 애니메이션, 공격 범위 위치, 이미지 반전 조정
 	if is_attacking or is_dead or is_shooting:
 		return  # 공격 중이거나 죽은 상태면 걷기 애니메이션 중단
-	if direction.x > 0:
+	
+	if direction.length() > 0:
 		anim_sp.play("walk")
+	elif direction.length() == 0:
+		anim_sp.play("idle")
+	
+	if direction.x > 0:
 		anim_sp.offset.x = -texture_pivot.x
 		if attack_method == "projectile":
 			projectile_pos.x = abs(projectile_pos.x)
@@ -161,15 +167,13 @@ func control_of_dir():
 		meleeAttack_detect_collision.position.x = meleeAttack_rect.position.x
 		anim_sp.flip_h = true
 	elif direction.x < 0:
-		anim_sp.play("walk")
 		anim_sp.offset.x = texture_pivot.x
 		if attack_method == "projectile":
 			projectile_pos.x = -abs(projectile_pos.x)
 		meleeAttack_collision.position.x = -meleeAttack_rect.position.x
 		meleeAttack_detect_collision.position.x = -meleeAttack_rect.position.x
 		anim_sp.flip_h = false
-	else:
-		anim_sp.play("idle")
+
 func control_attackAnim():
 	if is_attacking == false and is_dead == false and is_shooting == false:
 		for area in $detect_attack.get_overlapping_areas():
@@ -178,24 +182,34 @@ func control_attackAnim():
 				break
 
 	# 공격 중일 때만 프레임 체크
-	if anim_sp.animation == "attack":
+	if anim_sp.animation == "attack" and float(anim_sp.frame) in meleeAttack_frames and last_meleeAttack_frame != anim_sp.frame:
 		# json에서 frames에 있는 값들이 float임 json엔 Float만 가능하나봄 ㅅㅂ
-		meleeAttack_collision.disabled = !(float(anim_sp.frame) in meleeAttack_frames)
+		meleeAttack_collision.disabled = false
+		Sound.force_play("small_whoosh")
+		last_meleeAttack_frame = int(anim_sp.frame)
 	else:
 		meleeAttack_collision.disabled = true
-
 func _on_animation_finished():
 	match anim_sp.animation:
 		"attack":
 			is_attacking = false
 			allow_move = true
 			allow_meleeAttack = false
+			last_meleeAttack_frame = -1
 		"shoot":
 			last_projectile_frame = -1
 			is_shooting = false
 			allow_move = true
 		"death":
-			Command.particle("blood_explosion", global_position, Vector2(0, 0), Color(1, 1, 1, 1))
+			var sp_rect = anim_sp.sprite_frames.get_frame_texture("idle", 0).get_image().get_used_rect()
+			var area = sp_rect.size.x * sp_rect.size.y
+			var density = 0.0025  # 면적당 파티클 개수 비율 (조절 가능)
+			var particle_count = int(area * density)
+			Sound.force_play("blood_squishy", 12)
+			for i in range(particle_count):
+				var rand_offset = Vector2(randf_range(-sp_rect.size.x / 2, sp_rect.size.x / 2),randf_range(-sp_rect.size.y / 2, sp_rect.size.y / 2))
+				var spawn_pos = global_position + rand_offset
+				Command.particle("blood_explosion", spawn_pos)
 			queue_free()
 func _on_body_area_entered(area):
 	if area.name == "attack" and area.get_parent() is Player and is_dead == false:
