@@ -1,7 +1,8 @@
 extends Node
 
 # 커맨드 코드 마인크래프트 커맨드 느낌 함수들
-
+#인벤토리 불러오기
+#@export var detect_item_range : float = 40
 
 # 몬스터 소환 함수 / 몬스터 이름, 생성 할 좌표
 func summon_monster(monster_name : String, pos : Vector2):
@@ -85,6 +86,7 @@ func summon_item(item_name : String, pos : Vector2):
 	
 	dropItem.find_child("sp").texture = load("res://assets/sprites/items/" + item_name + ".png")
 	
+	dropItem.itemId = item_name
 	dropItem.itemName = item_data["name"]
 	dropItem.itemDes = item_data["des"]
 	dropItem.itemType = item_data["type"]

@@ -1,58 +1,16 @@
-extends Control
+extends Resource
+#인벤토리 슬롯 늘리는 법
+#1. assets -> objects -> ui -> playerinv -> inspector에 size 늘리고 empty에서 NewInvSlot 하면됨
+#2. assets -> objects -> ui -> inventory -> 왼쪽에 Panel 누르고 ctrl + D 해서 원하는 만큼 복사하면 됨
+#slot_grid 눌러서 inspector에 Columns 수 늘리면 한 줄에 들어가는 노드 최대 수 조절할 수 있
 
-@export var slot_active : Texture2D
-@export var slot_default : Texture2D
+class_name Inv
 
-var is_open = false
-var holding_item = null
-
-var slots : Array # 슬롯 자식 객체 저장 리스트
-
-# Pointer----------------------
-var slot_grid : GridContainer
-var back_panel : NinePatchRect
-
-func _ready():
-	slot_grid = $slot_grid
-	back_panel = $back_panel
-	load_slots()
-
-func read_slots():
-	# slots 리스트에 객체 불러와주는 함수
-	slots = []
-	slots = slot_grid.get_children()
+@export var slots: Array[InvSlot]
 	
-func control_slots():
-	# slot 관리
+func insert(item: InvItem):
 	for slot in slots:
-		var slot_panel = slot.find_child("panel")
-		var slot_center_pos = slot.global_position + Vector2(slot_panel.size.x/2, slot_panel.size.x/2)
-		$marker.global_position = slot_center_pos
-		if slot_center_pos.distance_to(get_global_mouse_position()) < slot_panel.size.x / 2:
-			#slot_panel.modulate = Color(5, 5, 5, 1)
-			slot_panel.texture = slot_active
-		else:
-			slot_panel.texture = slot_default
-			#slot_panel.modulate = Color(1, 1, 1, 1)
-
-func draw_back_panel(row : int):
-	back_panel.size.y = row * 28
-
-func load_slots():
-	var slot_path = load("res://assets/objects/gui/inventory_slot.tscn")
-	for i in range(Info.inventory_max_slot):
-		var slot = slot_path.instantiate()
-		slots.append(slot)
-		slot_grid.add_child(slot)
-
-func _process(delta):
-	read_slots()
-	control_slots()
-	
-	if Input.is_action_just_pressed("inventory"):
-		if is_open == true:
-			visible = false
-		elif is_open == false:
-			visible = true
-		is_open = !is_open
-	
+		if slot.item == null:
+			slot.item = item
+			return
+	print("빈 슬롯 없음")
