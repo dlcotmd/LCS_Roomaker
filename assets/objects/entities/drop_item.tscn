@@ -12,11 +12,13 @@ script = ExtResource("1_sldc3")
 [node name="sp" type="Sprite2D" parent="."]
 y_sort_enabled = true
 position = Vector2(0, 1)
+offset = Vector2(0, -2)
 
 [node name="light" type="PointLight2D" parent="."]
 color = Color(0.635294, 0.843137, 1, 1)
 energy = 0.3
 texture = ExtResource("2_jy5d4")
+offset = Vector2(0, -2)
 
 [node name="coll" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4.5)

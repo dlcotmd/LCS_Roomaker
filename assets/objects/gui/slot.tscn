@@ -1,13 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://h7ss0sedyou8"]
+[gd_scene load_steps=2 format=3 uid="uid://ctyn151rt3li"]
 
 [ext_resource type="Texture2D" uid="uid://br5lwx1q0fkpe" path="res://assets/sprites/gui/panels/gothic_rect.png" id="1_bicnf"]
-[ext_resource type="Script" path="res://assets/src/ui/slot.gd" id="1_yetuy"]
 
 [node name="Panel" type="Panel"]
 self_modulate = Color(1, 1, 1, 0)
 offset_right = 22.0
 offset_bottom = 22.0
-script = ExtResource("1_yetuy")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_bicnf")

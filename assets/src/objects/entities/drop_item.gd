@@ -2,8 +2,8 @@ extends Area2D
 
 class_name DropItem
 
-var itemId : String
 var itemName : String
+var itemDisplayName : String
 var itemDes : String
 var itemType : String
 

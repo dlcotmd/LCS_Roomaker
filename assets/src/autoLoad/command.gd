@@ -86,8 +86,8 @@ func summon_item(item_name : String, pos : Vector2):
 	
 	dropItem.find_child("sp").texture = load("res://assets/sprites/items/" + item_name + ".png")
 	
-	dropItem.itemId = item_name
-	dropItem.itemName = item_data["name"]
+	dropItem.itemName = item_name
+	dropItem.itemDisplayName = item_data["name"]
 	dropItem.itemDes = item_data["des"]
 	dropItem.itemType = item_data["type"]
 	
@@ -96,14 +96,22 @@ func summon_item(item_name : String, pos : Vector2):
 func give_item(item_name : String):
 	if get_tree().current_scene.name != 'play_scene':
 		return
+	elif Info.inventory.is_full == true: # 인벤토리가 꽉 차있다면
+		Command.error('인벤토리에 빈 공간이 없습니다.')
+		return
 	
 	var item_data = Cfile.get_jsonData("res://assets/data/items/" + item_name + ".json")
 
 	if item_data == null:
-		Command.error('데이터에 없는 객체입니다.')
+		Command.error('데이터에 없는 아이템을 가져올 수 없습니다.')
 		return
-		
 	
+	var blank_slots : Array = []
+	for slot in Info.inventory.slots:
+		if slot.held_itemName == "":
+			blank_slots.append(slot)
+	
+	blank_slots[0].held_itemName = item_name
 
 # 넉백 주는 함수 / 넉백을 주게 만든 대상, 넉백 받는 대상, 넉백 파워
 func apply_knockback(target_pos: Vector2, body: Node2D, force: float) -> void:
@@ -201,3 +209,5 @@ func error(text : String):
 	error_text.error = text
 	get_tree().current_scene.find_child("front_ui").add_child(error_text)
 
+func stylize_description():
+	pass

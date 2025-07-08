@@ -1,0 +1,58 @@
+[gd_scene load_steps=5 format=3 uid="uid://bcrr5xvr045au"]
+
+[ext_resource type="Script" path="res://assets/src/gui/inventory.gd" id="1_tqelo"]
+[ext_resource type="Texture2D" uid="uid://br5lwx1q0fkpe" path="res://assets/sprites/gui/panels/gothic_rect.png" id="2_csiyp"]
+[ext_resource type="Texture2D" uid="uid://b84xe72gsv3x6" path="res://assets/sprites/gui/panels/gothic_rect_active.png" id="2_mxp1a"]
+[ext_resource type="PackedScene" uid="uid://m85kis37rje5" path="res://assets/objects/gui/inventory_slot.tscn" id="3_6l356"]
+
+[node name="inventory" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_tqelo")
+slot_active = ExtResource("2_mxp1a")
+slot_default = ExtResource("2_csiyp")
+
+[node name="back_panel" type="NinePatchRect" parent="."]
+modulate = Color(0.698039, 0.698039, 0.698039, 1)
+layout_mode = 1
+offset_right = 114.0
+offset_bottom = 118.0
+texture = ExtResource("2_csiyp")
+patch_margin_left = 3
+patch_margin_top = 3
+patch_margin_right = 3
+patch_margin_bottom = 3
+
+[node name="slot_grid" type="GridContainer" parent="."]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 64.0
+offset_right = 110.0
+offset_bottom = 114.0
+theme_override_constants/h_separation = 28
+theme_override_constants/v_separation = 28
+columns = 4
+
+[node name="inventory_slot" parent="slot_grid" instance=ExtResource("3_6l356")]
+layout_mode = 2
+
+[node name="inventory_slot2" parent="slot_grid" instance=ExtResource("3_6l356")]
+layout_mode = 2
+
+[node name="inventory_slot3" parent="slot_grid" instance=ExtResource("3_6l356")]
+layout_mode = 2
+
+[node name="inventory_slot4" parent="slot_grid" instance=ExtResource("3_6l356")]
+layout_mode = 2
+
+[node name="inventory_slot5" parent="slot_grid" instance=ExtResource("3_6l356")]
+layout_mode = 2
+
+[node name="inventory_slot6" parent="slot_grid" instance=ExtResource("3_6l356")]
+layout_mode = 2
+
+[node name="inventory_slot7" parent="slot_grid" instance=ExtResource("3_6l356")]
+layout_mode = 2
+
+[node name="inventory_slot8" parent="slot_grid" instance=ExtResource("3_6l356")]
+layout_mode = 2
