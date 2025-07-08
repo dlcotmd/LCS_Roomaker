@@ -2,6 +2,7 @@ extends CharacterBody2D
 
 class_name Player
 
+
 # 플레이어 객체의 코드
 
 # 능력치 데이터는 Info.gd에 있는 데이터 들고옴.
@@ -127,3 +128,4 @@ func _on_body_area_entered(area):
 	if area.get_parent() is Monster and area.name == 'attack': # 공격 준 상대가 몬스터 라면
 		Command.hurt(self, area.get_parent().meleeAttack_damage)
 		Command.apply_knockback(area.global_position, self, area.get_parent().knockback_force)
+

@@ -1,60 +1,56 @@
-[gd_scene load_steps=5 format=3 uid="uid://bcrr5xvr045au"]
+[gd_scene load_steps=4 format=3 uid="uid://bcrr5xvr045au"]
 
-[ext_resource type="Script" path="res://assets/src/ui/inventory.gd" id="1_0ueyg"]
-[ext_resource type="Texture2D" uid="uid://b84xe72gsv3x6" path="res://assets/sprites/gui/panels/gothic_rect_active.png" id="2_57gkp"]
-[ext_resource type="Texture2D" uid="uid://b0lk2jx46sulu" path="res://assets/sprites/gui/panels/dark_rect.png" id="2_cdkiv"]
+[ext_resource type="Script" path="res://assets/src/ui/inventory_ui.gd" id="1_12l4v"]
+[ext_resource type="PackedScene" uid="uid://h7ss0sedyou8" path="res://assets/objects/gui/slot.tscn" id="3_1bwog"]
 [ext_resource type="Texture2D" uid="uid://br5lwx1q0fkpe" path="res://assets/sprites/gui/panels/gothic_rect.png" id="3_nvdxe"]
 
 [node name="inventory" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-script = ExtResource("1_0ueyg")
-slot_active = ExtResource("2_57gkp")
-slot_default = ExtResource("3_nvdxe")
+script = ExtResource("1_12l4v")
 
 [node name="back_panel" type="NinePatchRect" parent="."]
-modulate = Color(0.52549, 0.52549, 0.52549, 1)
+modulate = Color(0.698039, 0.698039, 0.698039, 1)
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -22.0
-offset_top = -55.0
-offset_right = 159.0
-offset_bottom = 97.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 114.0
+offset_bottom = 118.0
 texture = ExtResource("3_nvdxe")
 patch_margin_left = 3
 patch_margin_top = 3
 patch_margin_right = 3
 patch_margin_bottom = 3
 
-[node name="slot_grid" type="GridContainer" parent="."]
+[node name="slot_grid" type="GridContainer" parent="back_panel"]
+top_level = true
 layout_mode = 0
-offset_left = 6.0
-offset_top = 6.0
-offset_right = 6.0
-offset_bottom = 6.0
-theme_override_constants/h_separation = 35
-theme_override_constants/v_separation = 35
+offset_left = 9.0
+offset_top = 215.0
+offset_right = 115.0
+offset_bottom = 265.0
+theme_override_constants/h_separation = 28
+theme_override_constants/v_separation = 28
 columns = 4
 
-[node name="slot_grid2" type="GridContainer" parent="."]
+[node name="Panel" parent="back_panel/slot_grid" instance=ExtResource("3_1bwog")]
 layout_mode = 2
-offset_left = 22.0
-offset_top = -30.0
-offset_right = 22.0
-offset_bottom = -30.0
-theme_override_constants/h_separation = 35
-theme_override_constants/v_separation = 35
-columns = 4
 
-[node name="marker" type="Sprite2D" parent="."]
-visible = false
-modulate = Color(7.101, 1, 1, 1)
-position = Vector2(-139, -68)
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("2_cdkiv")
+[node name="Panel2" parent="back_panel/slot_grid" instance=ExtResource("3_1bwog")]
+layout_mode = 2
+
+[node name="Panel3" parent="back_panel/slot_grid" instance=ExtResource("3_1bwog")]
+layout_mode = 2
+
+[node name="Panel4" parent="back_panel/slot_grid" instance=ExtResource("3_1bwog")]
+layout_mode = 2
+
+[node name="Panel5" parent="back_panel/slot_grid" instance=ExtResource("3_1bwog")]
+layout_mode = 2
+
+[node name="Panel6" parent="back_panel/slot_grid" instance=ExtResource("3_1bwog")]
+layout_mode = 2
+
+[node name="Panel7" parent="back_panel/slot_grid" instance=ExtResource("3_1bwog")]
+layout_mode = 2
+
+[node name="Panel8" parent="back_panel/slot_grid" instance=ExtResource("3_1bwog")]
+layout_mode = 2
