@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://br5lwx1q0fkpe" path="res://assets/sprites/gui/panels/gothic_rect.png" id="3_nvdxe"]
 
 [node name="inventory" type="Control"]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_0ueyg")
@@ -21,8 +20,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_right = 82.0
-offset_bottom = 82.0
+offset_left = -22.0
+offset_top = -55.0
+offset_right = 159.0
+offset_bottom = 97.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_nvdxe")
@@ -37,9 +38,19 @@ offset_left = 6.0
 offset_top = 6.0
 offset_right = 6.0
 offset_bottom = 6.0
-theme_override_constants/h_separation = 24
-theme_override_constants/v_separation = 24
-columns = 3
+theme_override_constants/h_separation = 35
+theme_override_constants/v_separation = 35
+columns = 4
+
+[node name="slot_grid2" type="GridContainer" parent="."]
+layout_mode = 2
+offset_left = 22.0
+offset_top = -30.0
+offset_right = 22.0
+offset_bottom = -30.0
+theme_override_constants/h_separation = 35
+theme_override_constants/v_separation = 35
+columns = 4
 
 [node name="marker" type="Sprite2D" parent="."]
 visible = false

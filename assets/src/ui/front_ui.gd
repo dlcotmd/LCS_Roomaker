@@ -75,6 +75,6 @@ func control_item_des():
 		
 	if near_dropItem != null:
 		item_des.visible = true
-		item_des.text = "[b]<" + near_dropItem.itemName + ">[/b][color=#747474] ㅣ " + near_dropItem.itemType + "[/color]\n\n" + near_dropItem.itemDes
+		item_des.text = "[b]<" + near_dropItem.itemName + ">[/b][color=#747474] ㅣ " + near_dropItem.itemType + "[/color]\n\n" + near_dropItem.itemDes + "\n\n줍기 : E"
 	elif near_dropItem == null:
 		item_des.visible = false

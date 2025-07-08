@@ -91,6 +91,18 @@ func summon_item(item_name : String, pos : Vector2):
 	
 	get_tree().current_scene.find_child("all_entities").add_child(dropItem)
 
+func give_item(item_name : String):
+	if get_tree().current_scene.name != 'play_scene':
+		return
+	
+	var item_data = Cfile.get_jsonData("res://assets/data/items/" + item_name + ".json")
+
+	if item_data == null:
+		Command.error('데이터에 없는 객체입니다.')
+		return
+		
+	
+
 # 넉백 주는 함수 / 넉백을 주게 만든 대상, 넉백 받는 대상, 넉백 파워
 func apply_knockback(target_pos: Vector2, body: Node2D, force: float) -> void:
 	var direction = (body.global_position - target_pos).normalized()

@@ -15,7 +15,7 @@ var player_dash_delay : float = 0.83
 var player_knockback_force : float = 1.8
 var player_movement_speed : float = 55.0
 
-var inventory_max_slot : int = 9
+var inventory : Control
 var all_entities : Array = []
 
 # 풀 스크린 온 오프 / 풀 스크린 키 = F11 or F
