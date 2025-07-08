@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://bcrr5xvr045au"]
+[gd_scene load_steps=6 format=3 uid="uid://bcrr5xvr045au"]
 
 [ext_resource type="Script" path="res://assets/src/gui/inventory.gd" id="1_tqelo"]
 [ext_resource type="Texture2D" uid="uid://br5lwx1q0fkpe" path="res://assets/sprites/gui/panels/gothic_rect.png" id="2_csiyp"]
 [ext_resource type="Texture2D" uid="uid://b84xe72gsv3x6" path="res://assets/sprites/gui/panels/gothic_rect_active.png" id="2_mxp1a"]
 [ext_resource type="PackedScene" uid="uid://m85kis37rje5" path="res://assets/objects/gui/inventory_slot.tscn" id="3_6l356"]
+[ext_resource type="PackedScene" uid="uid://cs4dak0qncw38" path="res://assets/objects/gui/text_box.tscn" id="5_bncn7"]
 
 [node name="inventory" type="Control"]
 layout_mode = 3
@@ -56,3 +57,8 @@ layout_mode = 2
 
 [node name="inventory_slot8" parent="slot_grid" instance=ExtResource("3_6l356")]
 layout_mode = 2
+
+[node name="item_des" parent="." instance=ExtResource("5_bncn7")]
+layout_mode = 1
+offset_left = 120.0
+offset_right = 120.0

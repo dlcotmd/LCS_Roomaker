@@ -75,6 +75,6 @@ func control_item_des():
 		
 	if Info.near_dropItem != null:
 		item_des.visible = true
-		item_des.text = "[b]<" + Info.near_dropItem.itemDisplayName + ">[/b][color=#747474] ㅣ " + Info.near_dropItem.itemType + "[/color]\n\n" + Info.near_dropItem.itemDes + "\n\n[img]res://assets/sprites/gui/buttons/key_e.png[/img] [b]줍기[/b]"
+		item_des.text = Command.stylize_description(Info.near_dropItem.itemDisplayName, Info.near_dropItem.itemType, Info.near_dropItem.itemDes, "dropitem")
 	elif Info.near_dropItem == null:
 		item_des.visible = false

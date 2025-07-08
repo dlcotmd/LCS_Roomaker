@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=68 format=3 uid="uid://cv3ui17or26d0"]
+[gd_resource type="SpriteFrames" load_steps=65 format=3 uid="uid://cv3ui17or26d0"]
 
 [ext_resource type="Texture2D" uid="uid://d16hqqq54wav4" path="res://assets/sprites/player/all_state.png" id="1_lw21u"]
 [ext_resource type="Texture2D" uid="uid://dyt3f751h0320" path="res://assets/sprites/player/roll.png" id="2_tm61l"]
@@ -71,10 +71,6 @@ region = Rect2(325, 256, 65, 64)
 atlas = ExtResource("2_tm61l")
 region = Rect2(260, 256, 65, 64)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_reuor"]
-atlas = ExtResource("2_tm61l")
-region = Rect2(195, 256, 65, 64)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_rfrv8"]
 atlas = ExtResource("2_tm61l")
 region = Rect2(130, 256, 65, 64)
@@ -87,17 +83,9 @@ region = Rect2(65, 256, 65, 64)
 atlas = ExtResource("2_tm61l")
 region = Rect2(0, 256, 65, 64)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_07y4f"]
-atlas = ExtResource("2_tm61l")
-region = Rect2(325, 320, 65, 64)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_vhfa4"]
 atlas = ExtResource("2_tm61l")
 region = Rect2(260, 320, 65, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_lfe0a"]
-atlas = ExtResource("2_tm61l")
-region = Rect2(195, 320, 65, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jsyin"]
 atlas = ExtResource("2_tm61l")
@@ -333,9 +321,6 @@ animations = [{
 "texture": SubResource("AtlasTexture_0tska")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_reuor")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_rfrv8")
 }, {
 "duration": 1.0,
@@ -345,13 +330,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_808yj")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_07y4f")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_vhfa4")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_lfe0a")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_jsyin")
@@ -367,7 +346,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"dash_side",
-"speed": 33.0
+"speed": 25.0
 }, {
 "frames": [{
 "duration": 1.0,

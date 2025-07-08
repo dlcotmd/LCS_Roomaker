@@ -209,5 +209,14 @@ func error(text : String):
 	error_text.error = text
 	get_tree().current_scene.find_child("front_ui").add_child(error_text)
 
-func stylize_description():
-	pass
+func stylize_description(itemName : String, itemType : String, itemDes : String, state : String):
+	# state는 이 아이템이 인벤에 있는 건지 drop아이템 상태인지 등등 판별
+	# state = "inventory" or "dropitem"
+	var result_text = "[b]<" + itemName + ">[/b][color=#747474] ㅣ" + itemType + "[/color]\n\n" + itemDes
+	
+	if state == "dropitem":
+		result_text += "\n\n[img]res://assets/sprites/gui/buttons/key_e.png[/img] [b]줍기[/b]"
+	elif state == "inventory":
+		result_text += "\n\n[img]res://assets/sprites/gui/buttons/key_q.png[/img] [b]버리기[/b]"
+		
+	return result_text

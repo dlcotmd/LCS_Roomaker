@@ -9,12 +9,18 @@ var is_full : bool = false
 var slots : Array
 var active_slot : Control
 
+# Pointer --------------
+var item_des : Control
+
 func _ready():
 	Info.inventory = self
+	
+	item_des = $item_des
 	slots = $slot_grid.get_children()
 	
 func _process(delta):
 	_control_slots()
+	_control_item_des()
 	_check_full()
 	_check_empty()
 	
@@ -32,6 +38,14 @@ func _process(delta):
 	elif Input.is_action_just_pressed("item_drop") and active_slot != null and active_slot.held_itemName != "":
 		Command.summon_item(active_slot.held_itemName, Info.player_pos)
 		active_slot.held_itemName = ""
+		
+func _control_item_des():
+	if active_slot != null and active_slot.held_itemName != "":
+		item_des.visible = true
+		var item_data = Cfile.get_jsonData("res://assets/data/items/" + active_slot.held_itemName + ".json")
+		item_des.text = Command.stylize_description(item_data["name"], item_data["type"], item_data["des"], "inventory")
+	elif active_slot == null or active_slot.held_itemName == "":
+		item_des.visible = false
 	
 func _control_slots():
 	for slot in slots:
