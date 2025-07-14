@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://cs4dak0qncw38" path="res://assets/objects/gui/text_box.tscn" id="14_ia8gm"]
 
 [node name="front_ui" type="CanvasLayer"]
+follow_viewport_scale = 2.0
 script = ExtResource("1_g3hkb")
 heart = ExtResource("8_qp00q")
 heart_full = ExtResource("3_1607l")
@@ -55,10 +56,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -244.5
-offset_top = 15.0
-offset_right = -244.5
-offset_bottom = 15.0
+offset_left = -135.5
+offset_top = -59.0
+offset_right = -135.5
+offset_bottom = -59.0
 grow_horizontal = 2
 grow_vertical = 2
 

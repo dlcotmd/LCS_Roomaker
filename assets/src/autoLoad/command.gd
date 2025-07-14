@@ -93,6 +93,19 @@ func summon_item(item_name : String, pos : Vector2):
 	
 	get_tree().current_scene.find_child("all_entities").add_child(dropItem)
 
+func new_room(room_id : int, dir : String = "up", type : String = "basic"):
+	# dir은 이제 생성 할 방의 방향 "left", "right", "up", "down"
+	# type는 방의 속성 : "water", "lava" .... 등
+	var rooms_data = Cfile.get_jsonData("res://assets/data/rooms.json")
+	var target_room_data = rooms_data[str(room_id)]
+	
+	var room_path = load("res://assets/objects/structures/room.tscn")
+	var room = room_path.instantiate()
+	
+	room.tile_data = target_room_data
+	get_tree().current_scene.find_child("all_rooms").add_child(room)
+	
+
 func give_item(item_name : String):
 	if get_tree().current_scene.name != 'play_scene':
 		return
@@ -203,7 +216,7 @@ func error(text : String):
 	if get_tree().current_scene.name != 'play_scene':
 		return
 	
-	var error_text_path = load("res://assets/objects/gui/error_text.tscn")
+	var error_text_path = preload("res://assets/objects/gui/error_text.tscn")
 	var error_text = error_text_path.instantiate()
 	
 	error_text.error = text
@@ -215,8 +228,8 @@ func stylize_description(itemName : String, itemType : String, itemDes : String,
 	var result_text = "[b]<" + itemName + ">[/b][color=#747474] ㅣ" + itemType + "[/color]\n\n" + itemDes
 	
 	if state == "dropitem":
-		result_text += "\n\n[img]res://assets/sprites/gui/buttons/key_e.png[/img] [b]줍기[/b]"
+		result_text += "\n\n[img]res://assets/sprites/gui/buttons/key_f.png[/img] [b] 줍기[/b]"
 	elif state == "inventory":
-		result_text += "\n\n[img]res://assets/sprites/gui/buttons/key_q.png[/img] [b]버리기[/b]"
+		result_text += "\n\n[img]res://assets/sprites/gui/buttons/key_q.png[/img] [b] 버리기[/b]"
 		
 	return result_text

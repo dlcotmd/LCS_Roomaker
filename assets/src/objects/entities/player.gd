@@ -87,6 +87,7 @@ func control_attackAnim():
 			attack_collision.disabled = true
 
 	if Input.is_action_just_pressed("melee_attack"):
+		Info.player_hp += 1
 		melee_attack()
 	
 	# 구르기 코드인데 아직 불안정 함(추후 수정 or 삭제 예정)
@@ -95,7 +96,8 @@ func control_attackAnim():
 			is_dashing = true
 			var power = 270 # 구르기 추가 예정
 			Command.shake_camera(Info.player.find_child("cam"), 0.1,  0.5)
-			anim_sp.play("dash_side")
+			anim_sp.play("roll_" + last_dir)
+			Sound.force_play("clothes_drop", -2)
 			if last_dir == 'front':
 				velocity.y = power
 			elif last_dir == 'back':
@@ -121,7 +123,7 @@ func _on_animation_finished():
 	# move, idle은 반복 애니메이션 이므로 끝나지 않아, 끝나는 애니매이션은 attack 졸류뿐
 	if "attack" in anim_sp.animation:
 		is_attacking = false
-	if "dash" in anim_sp.animation:
+	if "roll" in anim_sp.animation:
 		is_dashing = false
 
 func _on_body_area_entered(area):

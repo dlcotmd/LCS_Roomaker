@@ -31,10 +31,11 @@ func _process(delta):
 			visible = true
 		is_open = !is_open
 	elif Input.is_action_just_pressed("pick_up"):
-		if Info.near_dropItem != null:
+		if Info.near_dropItem != null and Info.inventory.is_full == false:
 			Command.give_item(Info.near_dropItem.itemName)
 			Info.near_dropItem.queue_free()
 			Info.near_dropItem = null
+
 	elif Input.is_action_just_pressed("item_drop") and active_slot != null and active_slot.held_itemName != "":
 		Command.summon_item(active_slot.held_itemName, Info.player_pos)
 		active_slot.held_itemName = ""
