@@ -14,6 +14,7 @@ var max_hp : float
 var direction : Vector2
 var last_dir = 'front' # or "side", "back"
 var is_attacking : bool = false
+var is_dashing : bool = false
 
 var allow_dash : bool = false
 var dash_timer : float = 0
@@ -28,6 +29,8 @@ func _ready():
 	attack_collision = $attack/coll
 
 func _physics_process(delta):
+	#print("대쉬 허용 : ", allow_dash, "  공격 중인가 : ", is_attacking, "  대쉬 중인가? : ", is_dashing)
+	$cam.global_position = Info.room_in_player_pos + Vector2(0, -4)
 	Info.player_pos = global_position
 	max_hp = Info.player_max_hp
 	hp = Info.player_hp
@@ -44,26 +47,30 @@ func _physics_process(delta):
 	move_and_slide()
 
 func melee_attack():
-	if is_attacking == true:
+	if is_attacking == true or is_dashing == true:
 		return
 	is_attacking = true
 	direction = Vector2(0, 0)
 	Sound.force_play("small_whoosh", 20)
 	Sound.force_play("swing_sword", 1)
+	Command.particle("slash_basic_" + last_dir, global_position, Vector2(0,0), Color(1,1,1,1), anim_sp.flip_h)
 	anim_sp.play("attack_" + last_dir)
 
 func control_of_dir():
 	# 방향에 따른 애니메이션, 공격 범위 위치, 이미지 반전 조정
+	if is_dashing == true:
+		return
+	
 	if direction.x > 0:
 		anim_sp.play("move_side")
 		last_dir = 'side'
 		attack_collision.position = Vector2(18, 0)
-		$anim_sp.flip_h = true
+		anim_sp.flip_h = true
 	elif direction.x < 0:
 		anim_sp.play("move_side")
 		last_dir = 'side'
 		attack_collision.position = Vector2(-18, 0)
-		$anim_sp.flip_h = false
+		anim_sp.flip_h = false
 	elif direction.y > 0:
 		anim_sp.play("move_front")
 		last_dir = 'front'
@@ -72,7 +79,7 @@ func control_of_dir():
 		anim_sp.play("move_back")
 		last_dir = 'back'
 		attack_collision.position = Vector2(0, -18)
-	elif is_attacking == false:
+	elif is_attacking == false and is_dashing == false:
 		anim_sp.play("idle_" + last_dir)
 func control_attackAnim():
 	# 공격 애니메이션 조정
@@ -87,9 +94,12 @@ func control_attackAnim():
 	
 	# 구르기 코드인데 아직 불안정 함(추후 수정 or 삭제 예정)
 	if Input.is_action_just_pressed("dash"):
-		if allow_dash == true:
+		if allow_dash == true and is_attacking == false:
+			is_dashing = true
 			var power = 270 # 구르기 추가 예정
 			Command.shake_camera(Info.player.find_child("cam"), 0.1,  0.5)
+			anim_sp.play("roll_" + last_dir)
+			Sound.force_play("clothes_drop", -2)
 			if last_dir == 'front':
 				velocity.y = power
 			elif last_dir == 'back':
@@ -113,10 +123,12 @@ func dash_charge(delta):
 func _on_animation_finished():
 	# 원래는 애니메이션이 끝나면 발동되는 함수이지만,
 	# move, idle은 반복 애니메이션 이므로 끝나지 않아, 끝나는 애니매이션은 attack 졸류뿐
-	is_attacking = false
+	if "attack" in anim_sp.animation:
+		is_attacking = false
+	if "roll" in anim_sp.animation:
+		is_dashing = false
 
 func _on_body_area_entered(area):
 	if area.get_parent() is Monster and area.name == 'attack': # 공격 준 상대가 몬스터 라면
 		Command.hurt(self, area.get_parent().meleeAttack_damage)
 		Command.apply_knockback(area.global_position, self, area.get_parent().knockback_force)
-

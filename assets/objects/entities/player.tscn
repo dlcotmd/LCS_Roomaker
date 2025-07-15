@@ -103,7 +103,7 @@ script = ExtResource("1_rih66")
 [node name="anim_sp" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_xw84m")
 sprite_frames = ExtResource("2_h1xb3")
-animation = &"idle"
+animation = &"attack_back"
 
 [node name="coll" type="CollisionShape2D" parent="."]
 position = Vector2(0, 5)
@@ -112,7 +112,7 @@ shape = SubResource("RectangleShape2D_7xm4b")
 [node name="cam" type="Camera2D" parent="."]
 zoom = Vector2(1.2, 1.2)
 position_smoothing_enabled = true
-position_smoothing_speed = 2.0
+position_smoothing_speed = 8.0
 
 [node name="attack" type="Area2D" parent="."]
 

@@ -86,12 +86,61 @@ func summon_item(item_name : String, pos : Vector2):
 	
 	dropItem.find_child("sp").texture = load("res://assets/sprites/items/" + item_name + ".png")
 	
-	dropItem.itemId = item_name
-	dropItem.itemName = item_data["name"]
+	dropItem.itemName = item_name
+	dropItem.itemDisplayName = item_data["name"]
 	dropItem.itemDes = item_data["des"]
 	dropItem.itemType = item_data["type"]
 	
 	get_tree().current_scene.find_child("all_entities").add_child(dropItem)
+
+func new_room(room_key : String, dir : String = "here", type : String = "basic"):
+	# dir은 이제 생성 할 방의 방향 "left", "right", "up", "down"
+	# type는 방의 속성 : "water", "lava" .... 등
+	var rooms_data = Cfile.get_jsonData("res://assets/data/rooms.json")
+	if (room_key in rooms_data.keys()) == false:
+		Command.error("데이터에 없는 방입니다.")
+		return
+	var target_room_data = rooms_data[room_key]
+	
+	var room_path = load("res://assets/objects/structures/room.tscn")
+	var room = room_path.instantiate()
+	
+	room.tile_data = target_room_data
+	
+	# 타일맵 중앙 배치
+	room.find_child("tiles").position = -Vector2(224, 128)
+	
+	if dir == "right":
+		room.global_position = Info.room_in_player_pos + Vector2(448, 0)
+	elif dir == 'left':
+		room.global_position = Info.room_in_player_pos - Vector2(448, 0)
+	elif dir == 'up':
+		room.global_position = Info.room_in_player_pos - Vector2(0, 256)
+	elif dir == 'down':
+		room.global_position = Info.room_in_player_pos + Vector2(0, 256)
+		
+	get_tree().current_scene.find_child("all_rooms").add_child(room)
+	
+
+func give_item(item_name : String):
+	if get_tree().current_scene.name != 'play_scene':
+		return
+	elif Info.inventory.is_full == true: # 인벤토리가 꽉 차있다면
+		Command.error('인벤토리에 빈 공간이 없습니다.')
+		return
+	
+	var item_data = Cfile.get_jsonData("res://assets/data/items/" + item_name + ".json")
+
+	if item_data == null:
+		Command.error('데이터에 없는 아이템을 가져올 수 없습니다.')
+		return
+	
+	var blank_slots : Array = []
+	for slot in Info.inventory.slots:
+		if slot.held_itemName == "":
+			blank_slots.append(slot)
+	
+	blank_slots[0].held_itemName = item_name
 
 # 넉백 주는 함수 / 넉백을 주게 만든 대상, 넉백 받는 대상, 넉백 파워
 func apply_knockback(target_pos: Vector2, body: Node2D, force: float) -> void:
@@ -128,13 +177,14 @@ func shake_camera(camera: Camera2D, duration: float, intensity: float) -> void:
 	camera.offset = Vector2(0, 0)
 
 # 애니메이션 파티클 소환 함수 / 파티클 이름, 생성 위치, 바라볼 방향, 색상 변경 할 색상
-func particle(par_name : String, pos : Vector2, dir : Vector2 = Vector2(0, 0), color : Color = Color(1, 1, 1, 1)):
+func particle(par_name : String, pos : Vector2, dir : Vector2 = Vector2(0, 0), color : Color = Color(1, 1, 1, 1), flipV : bool = false):
 	var par_path = preload("res://assets/objects/particles/animated_particle.tscn")
 	var par = par_path.instantiate()
 	
 	par.modulate = color
 	par.find_child("anim_sp").sprite_frames = load("res://assets/animations/particles/" + par_name + ".tres")
 	par.find_child("anim_sp").play("play")
+	par.find_child("anim_sp").flip_h = flipV
 	par.global_position = pos
 	par.rotation = dir.angle()
 	get_tree().current_scene.find_child("all_particles").add_child(par)
@@ -183,9 +233,20 @@ func error(text : String):
 	if get_tree().current_scene.name != 'play_scene':
 		return
 	
-	var error_text_path = load("res://assets/objects/gui/error_text.tscn")
+	var error_text_path = preload("res://assets/objects/gui/error_text.tscn")
 	var error_text = error_text_path.instantiate()
 	
 	error_text.error = text
 	get_tree().current_scene.find_child("front_ui").add_child(error_text)
 
+func stylize_description(itemName : String, itemType : String, itemDes : String, state : String):
+	# state는 이 아이템이 인벤에 있는 건지 drop아이템 상태인지 등등 판별
+	# state = "inventory" or "dropitem"
+	var result_text = "[b]<" + itemName + ">[/b][color=#747474] ㅣ" + itemType + "[/color]\n\n" + itemDes
+	
+	if state == "dropitem":
+		result_text += "\n\n[img]res://assets/sprites/gui/buttons/key_f.png[/img] [b] 줍기[/b]"
+	elif state == "inventory":
+		result_text += "\n\n[img]res://assets/sprites/gui/buttons/key_q.png[/img] [b] 버리기[/b]"
+		
+	return result_text
