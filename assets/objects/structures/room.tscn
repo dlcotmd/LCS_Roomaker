@@ -7,13 +7,13 @@
 size = Vector2(448, 272)
 
 [node name="room" type="Node2D"]
+y_sort_enabled = true
 script = ExtResource("1_68v45")
 
-[node name="tile" parent="." instance=ExtResource("2_qnwqw")]
+[node name="tiles" parent="." instance=ExtResource("2_qnwqw")]
 
 [node name="room" type="Area2D" parent="."]
 
 [node name="coll" type="CollisionShape2D" parent="room"]
+visible = false
 shape = SubResource("RectangleShape2D_05b8x")
-
-[connection signal="area_entered" from="room" to="." method="_on_room_area_entered"]

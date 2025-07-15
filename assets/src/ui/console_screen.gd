@@ -27,7 +27,7 @@ func _process(delta):
 		inputBox.text = reverse_list[index_num]
 		inputBox.caret_column = inputBox.text.length()
 		index_num += 1
-		
+
 func control_visible():
 	if off_console == true:
 		get_tree().paused = false

@@ -97,6 +97,9 @@ func new_room(room_key : String, dir : String = "here", type : String = "basic")
 	# dir은 이제 생성 할 방의 방향 "left", "right", "up", "down"
 	# type는 방의 속성 : "water", "lava" .... 등
 	var rooms_data = Cfile.get_jsonData("res://assets/data/rooms.json")
+	if (room_key in rooms_data.keys()) == false:
+		Command.error("데이터에 없는 방입니다.")
+		return
 	var target_room_data = rooms_data[room_key]
 	
 	var room_path = load("res://assets/objects/structures/room.tscn")
@@ -105,16 +108,16 @@ func new_room(room_key : String, dir : String = "here", type : String = "basic")
 	room.tile_data = target_room_data
 	
 	# 타일맵 중앙 배치
-	room.find_child("tile").position = -Vector2(224, 136)
+	room.find_child("tiles").position = -Vector2(224, 128)
 	
 	if dir == "right":
 		room.global_position = Info.room_in_player_pos + Vector2(448, 0)
 	elif dir == 'left':
 		room.global_position = Info.room_in_player_pos - Vector2(448, 0)
 	elif dir == 'up':
-		room.global_position = Info.room_in_player_pos - Vector2(0, 272)
+		room.global_position = Info.room_in_player_pos - Vector2(0, 256)
 	elif dir == 'down':
-		room.global_position = Info.room_in_player_pos + Vector2(0, 272)
+		room.global_position = Info.room_in_player_pos + Vector2(0, 256)
 		
 	get_tree().current_scene.find_child("all_rooms").add_child(room)
 	
