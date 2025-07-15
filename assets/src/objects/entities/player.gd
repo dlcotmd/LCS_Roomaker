@@ -29,6 +29,8 @@ func _ready():
 	attack_collision = $attack/coll
 
 func _physics_process(delta):
+	#print(Info.room_in_player_pos)
+	$cam.global_position = Info.room_in_player_pos
 	Info.player_pos = global_position
 	max_hp = Info.player_max_hp
 	hp = Info.player_hp
@@ -51,6 +53,7 @@ func melee_attack():
 	direction = Vector2(0, 0)
 	Sound.force_play("small_whoosh", 20)
 	Sound.force_play("swing_sword", 1)
+	Command.particle("slash_basic_" + last_dir, global_position, Vector2(0,0), Color(1,1,1,1), anim_sp.flip_h)
 	anim_sp.play("attack_" + last_dir)
 
 func control_of_dir():
@@ -62,12 +65,12 @@ func control_of_dir():
 		anim_sp.play("move_side")
 		last_dir = 'side'
 		attack_collision.position = Vector2(18, 0)
-		$anim_sp.flip_h = true
+		anim_sp.flip_h = true
 	elif direction.x < 0:
 		anim_sp.play("move_side")
 		last_dir = 'side'
 		attack_collision.position = Vector2(-18, 0)
-		$anim_sp.flip_h = false
+		anim_sp.flip_h = false
 	elif direction.y > 0:
 		anim_sp.play("move_front")
 		last_dir = 'front'
@@ -87,7 +90,6 @@ func control_attackAnim():
 			attack_collision.disabled = true
 
 	if Input.is_action_just_pressed("melee_attack"):
-		Info.player_hp += 1
 		melee_attack()
 	
 	# 구르기 코드인데 아직 불안정 함(추후 수정 or 삭제 예정)
@@ -130,4 +132,3 @@ func _on_body_area_entered(area):
 	if area.get_parent() is Monster and area.name == 'attack': # 공격 준 상대가 몬스터 라면
 		Command.hurt(self, area.get_parent().meleeAttack_damage)
 		Command.apply_knockback(area.global_position, self, area.get_parent().knockback_force)
-

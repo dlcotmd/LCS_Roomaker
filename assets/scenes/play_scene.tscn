@@ -9,6 +9,7 @@
 [node name="play_scene" type="Node2D"]
 
 [node name="all_rooms" type="Node2D" parent="."]
+y_sort_enabled = true
 script = ExtResource("1_kl2vb")
 
 [node name="all_particles" type="Node2D" parent="."]
@@ -20,7 +21,6 @@ y_sort_enabled = true
 script = ExtResource("2_udt0u")
 
 [node name="player" parent="all_entities" instance=ExtResource("1_553wh")]
-position = Vector2(88, 40)
 
 [node name="front_ui" parent="." instance=ExtResource("4_x87jd")]
 
